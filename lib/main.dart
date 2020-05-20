@@ -10,7 +10,6 @@ class MoneyWiz extends StatelessWidget {
       title: 'MoneyWiz',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: DayView(),
     );
