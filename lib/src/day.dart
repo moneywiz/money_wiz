@@ -14,6 +14,13 @@ class Day {
     transactions=List();
     _positive=0;
     _negative=0;
+    month.addDay(this);
+  }
+
+  addTransaction(Transaction t) {
+    transactions.add(t);
+    _positive += t.value > 0 ? t.value : 0;
+    _negative += t.value < 0 ? -1 * t.value : 0;
   }
 
   get positive => _positive;

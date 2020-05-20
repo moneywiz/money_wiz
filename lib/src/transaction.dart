@@ -11,6 +11,7 @@ class Transaction {
   Transaction(this.day, this.value) {
     description="";
     categories=List();
+    day.addTransaction(this);
   }
 
 }
