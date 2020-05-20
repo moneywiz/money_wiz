@@ -6,9 +6,10 @@ class Transaction {
 
   double value;
   String description;
+  String cause;
   List<String> categories;
 
-  Transaction(this.day, this.value) {
+  Transaction(this.day, this.value, this.cause) {
     description="";
     categories=List();
     day.addTransaction(this);
