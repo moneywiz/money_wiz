@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moneywiz/view/day_view.dart';
 
 void main() => runApp(MoneyWiz());
 
@@ -11,7 +12,7 @@ class MoneyWiz extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'MoneyWiz'),
+      home: DayView(),
     );
   }
 }
