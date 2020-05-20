@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:moneywiz/view/day_view.dart';
+import 'package:moneywiz/view/stats_month_view.dart';
+import 'package:moneywiz/src/data.dart';
 
 void main() => runApp(MoneyWiz());
 
 class MoneyWiz extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    Data();
     return MaterialApp(
       title: 'MoneyWiz',
       theme: ThemeData(

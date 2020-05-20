@@ -11,6 +11,10 @@ class Month {
     days=List();
   }
 
+  addDay(Day d) {
+    days.add(d);
+  }
+
   get positive {
     double pos=0;
     for (Day d in days) pos+=d.positive;
