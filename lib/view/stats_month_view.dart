@@ -30,7 +30,7 @@ class _StatsMonthViewState extends State<StatsMonthView> {
           Container(
               width: deviceWidth*0.9,
               height: deviceHeight*0.3,
-              child: BarChart(BarChart._getData(Data.months[4]), animate: true),
+              child: BarChart.build(BarChart._getData(Data.months[4]), animate: true),
           )
         ],
       ),
@@ -38,14 +38,9 @@ class _StatsMonthViewState extends State<StatsMonthView> {
   }
 }
 
-class BarChart extends StatelessWidget {
-  final List<charts.Series> seriesList;
-  final bool animate;
+class BarChart {
 
-  BarChart(this.seriesList, {this.animate});
-
-  @override
-  Widget build(BuildContext context) {
+  static Widget build(seriesList, {animate}) {
     return new charts.BarChart(
       seriesList,
       animate: animate,
@@ -68,7 +63,7 @@ class BarChart extends StatelessWidget {
       new charts.Series<Day, String>(
         id: 'Expense',
         domainFn: (Day day, _) => day.day.toString(),
-        measureFn: (Day day, _) => day.negative,
+        measureFn: (Day day, _) => day.negative.abs(),
         colorFn: (_, __) => charts.MaterialPalette.red.shadeDefault,
         data: month.days,
       ),
