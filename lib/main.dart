@@ -14,7 +14,7 @@ class MoneyWiz extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: DayView(),
+      home: UpdateCategories(),
     );
   }
 }
