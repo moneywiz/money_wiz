@@ -27,6 +27,16 @@ class Day {
     _negative += t.value < 0 ? t.value : 0;
   }
 
+  get CategoryBalance {
+    Map<String, double> map = Map();
+    for (var t in transactions) {
+      for (var c in t.categories) {
+        map[c] = map.containsKey(c) ? map[c] + t.value.abs(): t.value.abs();
+      }
+    }
+    return map;
+  }
+
   get positive => _positive;
 
   get negative => _negative;

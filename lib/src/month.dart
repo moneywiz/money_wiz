@@ -17,6 +17,18 @@ class Month {
     days.add(d);
   }
 
+  get CategoryBalance {
+    Map<String, double> map = Map();
+    map.entries.toList();
+    for (var d in days) {
+      Map<String, double> dayMap = d.CategoryBalance;
+      for (var c in dayMap.keys) {
+        map[c] = map.containsKey(c) ? map[c] + dayMap[c]: dayMap[c];
+      }
+    }
+    return map;
+  }
+
   get positive {
     double pos=0;
     for (Day d in days) pos+=d.positive;

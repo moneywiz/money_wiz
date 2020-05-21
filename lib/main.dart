@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:moneywiz/view/day_view.dart';
+
 import 'package:moneywiz/view/month_view.dart';
+import 'package:moneywiz/view/stats_category_view.dart';
 import 'package:moneywiz/view/stats_month_view.dart';
 import 'package:moneywiz/src/data.dart';
 
