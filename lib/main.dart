@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:moneywiz/view/day_view.dart';
+import 'package:moneywiz/view/month_view.dart';
 import 'package:moneywiz/view/stats_month_view.dart';
 import 'package:moneywiz/src/data.dart';
 
@@ -14,7 +15,7 @@ class MoneyWiz extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: DayView(),
+      home: MonthView(Data.months[3]),
     );
   }
 }

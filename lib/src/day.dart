@@ -3,11 +3,10 @@ import 'package:moneywiz/src/transaction.dart';
 
 class Day {
 
-  static var _months=["Jan","Feb","Mar","Apr","Mar","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   static var _weekDays=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
 
   Month month;
-
+  DateTime date;
 
   int day;
   double _positive;
@@ -19,12 +18,13 @@ class Day {
     _positive=0;
     _negative=0;
     month.addDay(this);
+    date=DateTime(month.year,month.month,day);
   }
 
   addTransaction(Transaction t) {
     transactions.add(t);
     _positive += t.value > 0 ? t.value : 0;
-    _negative += t.value < 0 ? -1 * t.value : 0;
+    _negative += t.value < 0 ? t.value : 0;
   }
 
   get positive => _positive;
@@ -33,12 +33,17 @@ class Day {
 
   get balance => _positive+_negative;
 
-  get monthString {
-    return _months[month.month-1];
+  bool isLast() {
+    DateTime dt=(date.month < 12)?DateTime(date.year, date.month + 1, 0):DateTime(date.year + 1, 1, 0);
+    return dt.day==day;
+  }
+
+  bool isFirst() {
+    return day==1;
   }
 
   get weekDayString {
-    var weekDay=DateTime(month.year,month.month,day).weekday;
+    var weekDay=date.weekday;
     return _weekDays[weekDay-1];
   }
 
@@ -46,7 +51,7 @@ class Day {
     var total=_positive+_negative.abs();
     if (total==0) return null;
     if (pos) return ((_positive)/total);
-    return ((_negative)/total);
+    return ((_negative.abs())/total);
   }
 
 }
