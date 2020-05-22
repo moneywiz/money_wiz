@@ -43,6 +43,13 @@ class _UpdateCategories extends State<StatefulWidget> {
                         child: RaisedButton(
                           color: Colors.white,
                           onPressed: () {
+                            createCategoriesNewPopUp(context).then((onValue){
+                              if (onValue != null && onValue != ""){
+                                setState(() {
+                                  temp_categories.add(onValue);
+                                });
+                              }
+                            });
                           },
                           child: Text("Add", style: TextStyle(fontWeight: FontWeight.bold),),
                           ),
@@ -64,19 +71,17 @@ class _UpdateCategories extends State<StatefulWidget> {
             ),
 
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                RaisedButton(
-                  color: Colors.white,
-                  onPressed: () {
-                  },
-                  child: Text("Cancel"),
-                ),
-                RaisedButton(
-                  color: Colors.lightBlue,
-                  onPressed: () {
-                  },
-                  child: Text("Apply"),
+                Padding(
+                  padding: EdgeInsets.only(left: 310.0),
+                  child:  RaisedButton(
+                      color: Colors.lightBlue,
+                      onPressed: () {
+                        Data.expenseCategories = temp_categories;
+                        Navigator.of(context).pop();
+                      },
+                      child: Text("Apply"),
+                    ),
                 ),
               ],
             )
@@ -98,16 +103,32 @@ class _UpdateCategories extends State<StatefulWidget> {
     });
   }
 
+    Future<String> createCategoriesNewPopUp(BuildContext context){
+
+      TextEditingController customController = TextEditingController();
+
+      return showDialog(context: context, builder: (context){
+        return AlertDialog(
+            title: Text("New Category name :"),
+            content: TextField(
+              controller: customController,
+            ),
+            actions: <Widget>[
+              MaterialButton(
+                elevation: 5.0,
+                child: Text("Create"),
+                onPressed: () {
+                  Navigator.of(context).pop(customController.text.toString());
+                },
+              ),
+            ]
+        );
+      });
+    }
+
 
 
 }
-
-
-/*setState((){
-if (onValue != null ){
-temp_categories[id] = onValue;
-}
-});*/
 
 
 class MyTile extends StatelessWidget{
