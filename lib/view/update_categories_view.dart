@@ -56,8 +56,8 @@ class _UpdateCategories extends State<StatefulWidget> {
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
                 children: <Widget>[
-                  for (int i = 0; i<Data.expenseCategories.length; i++)
-                    MyTile(i, temp_categories)
+                  for (int i = 0; i<temp_categories.length; i++)
+                    MyTile(i, temp_categories[i], changeName, removeName),
 
                 ],
               ),
@@ -86,49 +86,65 @@ class _UpdateCategories extends State<StatefulWidget> {
   }
 
 
+  changeName(String name, int id){
+    setState(() {
+      temp_categories[id] = name;
+    });
+  }
+
+  removeName(String name){
+    setState(() {
+      temp_categories.remove(name);
+    });
+  }
+
+
 
 }
 
 
-class MyTile extends StatefulWidget{
-
-  int id;
-  List<String> temp_categories;
-
-  MyTile(id, temp_categories){
-    this.id = id;
-    this.temp_categories = temp_categories;
-  }
-
-  @override
-  State<StatefulWidget> createState() => _MyTile(id, temp_categories);
+/*setState((){
+if (onValue != null ){
+temp_categories[id] = onValue;
 }
+});*/
 
 
-class _MyTile extends State<StatefulWidget> {
+class MyTile extends StatelessWidget{
 
   int id;
-  List<String> temp_categories;
+  String name;
 
-  _MyTile(id, temp_categories){
+  Function(String new_name, int id) changeName;
+  Function(String name) removeName;
+
+  MyTile(id, name, changeName, removeName){
     this.id = id;
-    this.temp_categories = temp_categories;
+    this.name = name;
+    this.changeName = changeName;
+    this.removeName = removeName;
   }
+
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-        onTap: (){
-          createCategoriesFormPopUp(context).then((onValue){
-            setState((){
-              if (onValue != null ){
-                temp_categories[id] = onValue;
-              }
-            });
-          });
-        },
-        leading: Icon(Icons.map),
-        title: Text(temp_categories[id]),
+      onTap: (){
+        createCategoriesFormPopUp(context).then((onValue){
+          if(onValue != null && onValue != ""){
+            changeName(onValue, id);
+          }
+        });
+      },
+      onLongPress: (){
+        createCategoriesRemovePopUp(context, name).then((onValue){
+          if (onValue == true) {
+            removeName(name);
+          }
+        });
+      },
+      leading: Icon(Icons.map),
+      title: Text(name),
     );
   }
 
@@ -151,16 +167,30 @@ class _MyTile extends State<StatefulWidget> {
                 Navigator.of(context).pop(customController.text.toString());
               },
             ),
-            MaterialButton(
-              elevation: 5.0,
-              child: Text("Remove"),
-              onPressed: () {
-              },
-            )
           ]
       );
     });
   }
+
+
+  Future<bool> createCategoriesRemovePopUp(BuildContext context, String name){
+
+    return showDialog(context: context, builder: (context){
+      return AlertDialog(
+          title: Text("Remove Category :\n '$name' ?"),
+          actions: <Widget>[
+            MaterialButton(
+              elevation: 5.0,
+              child: Text("Remove"),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ]
+      );
+    });
+  }
+
 
 }
 
