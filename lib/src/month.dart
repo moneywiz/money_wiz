@@ -56,4 +56,10 @@ class Month {
     return ((date.month < 12)?DateTime(date.year, date.month + 1, 0):DateTime(date.year + 1, 1, 0)).day;
   }
 
+  static int nWeeks(int month, int year) {
+    DateTime date=DateTime(year,month,1);
+    int nd=nDays(month, year);
+    return 1+((nd-(8-date.weekday))/7).ceil();
+  }
+
 }

@@ -17,7 +17,7 @@ class MoneyWiz extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MonthView(Data.months[3]),
+      home: MonthView(Data.months[4]),
     );
   }
 }
