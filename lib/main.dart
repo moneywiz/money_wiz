@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:moneywiz/view/accounts_view.dart';
+import 'package:moneywiz/view/account_view.dart';
 import 'package:moneywiz/view/day_view.dart';
 
 import 'package:moneywiz/view/month_view.dart';
@@ -18,7 +20,7 @@ class MoneyWiz extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: UpdateCategories(),
+      home: Account(),
     );
   }
 }
