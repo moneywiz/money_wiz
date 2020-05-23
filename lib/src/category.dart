@@ -13,4 +13,9 @@ class Category {
     color = Color(rnd.nextInt(0xffffffff));
   }
 
+  @override
+  bool equals(Object e1, Object e2){
+    return Category(e1).name == Category(e2).name;
+  }
+
 }

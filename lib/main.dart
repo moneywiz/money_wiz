@@ -20,7 +20,7 @@ class MoneyWiz extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Limit(),
+      home: Accounts(),
     );
   }
 }

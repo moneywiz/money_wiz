@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moneywiz/view/account_view.dart';
 import 'package:moneywiz/src/day.dart';
 import 'package:moneywiz/src/data.dart';
 import 'package:moneywiz/src/month.dart';
@@ -49,6 +50,7 @@ class _Accounts extends State<StatefulWidget> {
                 setState(() {
                   account = newValue;
                 });
+                Navigator.of(context).push( MaterialPageRoute(builder: (context) => Account()));
               },
               items: <String>['Account1', 'Account2', 'Account3', 'Account4']
                   .map<DropdownMenuItem<String>>((String value) {

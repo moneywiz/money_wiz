@@ -4,6 +4,10 @@ import 'package:moneywiz/src/data.dart';
 import 'package:moneywiz/src/month.dart';
 import 'package:moneywiz/src/transaction.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:moneywiz/view/limit_view.dart';
+import 'package:moneywiz/view/update_categories_view.dart';
+import 'package:moneywiz/view/stats_month_view.dart';
+import 'package:moneywiz/view/day_view.dart';
 
 class Account extends StatefulWidget{
   @override
@@ -64,7 +68,7 @@ class _Account extends State<StatefulWidget> {
                     title: Text("Calender"),
                     leading: Icon(Icons.calendar_today,),
                     onTap: (){
-
+                      Navigator.of(context).push( MaterialPageRoute(builder: (context) => DayView(Day(Month(2020, 6), 10))));
                     },
                   ),
                   const Divider(
@@ -78,7 +82,7 @@ class _Account extends State<StatefulWidget> {
                     title: Text("Statistics"),
                     leading: Icon(Icons.show_chart),
                     onTap: (){
-
+                      Navigator.of(context).push( MaterialPageRoute(builder: (context) => StatsMonthView()));
                     },
                   ),
                   const Divider(
@@ -92,7 +96,7 @@ class _Account extends State<StatefulWidget> {
                     title: Text("Goal Limits"),
                     leading: Icon(Icons.flag),
                     onTap: (){
-
+                      Navigator.of(context).push( MaterialPageRoute(builder: (context) => Limit()));
                     },
                   ),
                   const Divider(
@@ -106,7 +110,7 @@ class _Account extends State<StatefulWidget> {
                     title: Text("Settings"),
                     leading: Icon(Icons.settings),
                     onTap: (){
-
+                      Navigator.of(context).push( MaterialPageRoute(builder: (context) => (UpdateCategories())));
                     },
                   ),
 
