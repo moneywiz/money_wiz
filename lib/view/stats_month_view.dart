@@ -79,7 +79,7 @@ class StatsBarChart extends StatefulWidget {
   final Month month;
   final Function func;
   final Color barColor;
-  final List<Category> categories;
+  List<Category> categories;
 
   static final Category _all = Category('All');
 
@@ -87,9 +87,10 @@ class StatsBarChart extends StatefulWidget {
     this.month,
     this.func,
     this.barColor,
-    this.categories
+    categories
   }) {
-    if (!(categories.contains(_all))) categories.insert(0, _all);
+    this.categories = List.from(categories);
+    if (!(this.categories.contains(_all))) this.categories.insert(0, _all);
   }
 
   @override
