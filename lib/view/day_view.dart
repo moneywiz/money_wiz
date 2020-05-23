@@ -33,6 +33,8 @@ class _DayViewState extends State<DayView> {
         length: 2,
         child: Scaffold(
           appBar: TabBar(
+            labelColor: Color(0xFF000000),
+            unselectedLabelColor: Color(0xFF000000),
             tabs: <Widget>[
               Tab(child: Text("Balance"),),
               Tab(text: "Transactions"),

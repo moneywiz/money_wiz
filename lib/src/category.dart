@@ -13,4 +13,5 @@ class Category {
     color = Color(rnd.nextInt(0xffffffff));
   }
 
+  String toString() => name;
 }

@@ -41,7 +41,7 @@ class Data {
       for (var j in Iterable<int>.generate(Month.nDays(i+1, 2020)).toList()) {
         Day d = Day(month, j+1);
         for (var k in Iterable<int>.generate(random.nextInt(6)).toList()) {
-          bool expense = random.nextInt(100)<75;
+          bool expense = random.nextInt(100)<85;
           int randomNumber = random.nextInt(150) + 1;
           randomNumber *= expense ? -1 : 1;
           Transaction t = Transaction(d, randomNumber + double.parse(random.nextDouble().toStringAsFixed(2)), "Placeholder");

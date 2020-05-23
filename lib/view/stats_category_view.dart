@@ -7,38 +7,29 @@ import 'package:flutter/material.dart';
 
 import 'indicator.dart';
 
-class StatsCategoryView extends StatefulWidget {
+class StatsCategoryView extends StatefulWidget{
+  Month month;
+
+  @override
+  StatsCategoryView(this.month);
+
   @override
   State<StatefulWidget> createState() => _StatsCategoryViewState();
 }
 
-class _StatsCategoryViewState extends State<StatsCategoryView> {
+class _StatsCategoryViewState extends State<StatsCategoryView> with AutomaticKeepAliveClientMixin{
   int touchedIndex;
 
   @override
   Widget build(BuildContext context) {
     double deviceWidth = MediaQuery.of(context).size.width;
     double deviceHeight = MediaQuery.of(context).size.height;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Statistics"),
-      ),
-      body: Column(
+    return Column(
         children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              RaisedButton(child: Text("By Day")),
-              RaisedButton(child: Text("By Category")),
-            ],
-          ),
-          SizedBox(
-            height: 16,
-          ),
           DefaultTabController(
             length: 2,
             child: SizedBox(
-              height: 400.0,
+              height: 520.0,
               child: Column(
                 children: <Widget>[
                   TabBar(
@@ -57,10 +48,10 @@ class _StatsCategoryViewState extends State<StatsCategoryView> {
                     child: TabBarView(
                       children: <Widget>[
                         Container(
-                            child: getPieChart(Data.months[4].ExpenseCategoryBalance)
+                            child: getPieChart(widget.month.ExpenseCategoryBalance)
                         ),
                         Container(
-                            child: getPieChart(Data.months[4].IncomeCategoryBalance)
+                            child: getPieChart(widget.month.IncomeCategoryBalance)
                         ),
                       ],
                     ),
@@ -70,7 +61,6 @@ class _StatsCategoryViewState extends State<StatsCategoryView> {
             ),
           ),
         ],
-      ),
     );
   }
 
@@ -160,5 +150,8 @@ class _StatsCategoryViewState extends State<StatsCategoryView> {
     );
     return res;
   }
+
+  @override
+  bool get wantKeepAlive => true;
 
 }

@@ -4,7 +4,7 @@ import 'category.dart';
 
 class Month {
 
-  static var _months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  static var months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   static Category _others = Category("Others");
 
   int year;
@@ -78,7 +78,7 @@ class Month {
   }
 
   get monthString {
-    return _months[month-1];
+    return months[month-1];
   }
 
   static int nDays(int month, int year) {

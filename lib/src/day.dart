@@ -51,7 +51,25 @@ class Day {
 
   get positive => _positive;
 
+  double getPositive({Category category}) {
+    if (category == null) return _positive;
+    double res = 0;
+    for(Transaction t in transactions) {
+      if (t.categories.contains(category) && t.value > 0) res += t.value;
+    }
+    return res;
+  }
+
   get negative => _negative;
+
+  double getNegative({Category category}) {
+    if (category == null) return _negative;
+    double res = 0;
+    for(Transaction t in transactions) {
+      if (t.categories.contains(category) && t.value < 0) res += t.value;
+    }
+    return res;
+  }
 
   get balance => _positive+_negative;
 
