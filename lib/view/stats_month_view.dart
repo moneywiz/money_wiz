@@ -90,7 +90,9 @@ class StatsBarChart extends StatefulWidget {
     categories
   }) {
     this.categories = List.from(categories);
-    if (!(categories.contains(_all))) categories.insert(0, _all);
+
+    if (!(this.categories.contains(_all))) this.categories.insert(0, _all);
+
   }
 
   @override
