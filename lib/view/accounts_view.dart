@@ -36,7 +36,7 @@ class _Accounts extends State<StatefulWidget> {
             Center(
               child: DropdownButton<String>(
                 value: account,
-                icon: Icon(Icons.arrow_downward),
+                icon: Icon(Icons.expand_more),
                 iconSize: 24,
                 elevation: 16,
                 style: TextStyle(
