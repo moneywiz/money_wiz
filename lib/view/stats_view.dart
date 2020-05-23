@@ -4,7 +4,6 @@ import 'stats_category_view.dart';
 import 'package:moneywiz/src/data.dart';
 import 'package:moneywiz/src/month.dart';
 import 'package:flutter_calendar_carousel/src/calendar_header.dart';
-import 'package:intl/intl.dart' show DateFormat;
 
 class StatsView extends StatefulWidget {
   int month;
@@ -21,8 +20,7 @@ class _StatsViewState extends State<StatsView> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: DefaultTabController(
+    return DefaultTabController(
         length: choices.length,
         child: Scaffold(
           appBar: AppBar(
@@ -54,12 +52,16 @@ class _StatsViewState extends State<StatsView> {
                   showHeader: true,
                   headerTitle: Month.months[Data.months[widget.month].month - 1] + " " +  Data.months[widget.month].year.toString(),
                   onLeftButtonPressed: (){
-                    widget.month -= 1;
-                    this.setState(() {});
+                    if(widget.month - 1 >= 0) {
+                      widget.month -= 1;
+                      this.setState(() {});
+                    }
                   },
                   onRightButtonPressed: (){
-                    widget.month += 1;
-                    this.setState(() {});
+                    if(Data.months.length > widget.month + 1) {
+                      widget.month += 1;
+                      this.setState(() {});
+                    }
                   },
                   showHeaderButtons: true,
                   isTitleTouchable: false,
@@ -69,7 +71,6 @@ class _StatsViewState extends State<StatsView> {
             ]
           ),
         ),
-      ),
     );
   }
 }

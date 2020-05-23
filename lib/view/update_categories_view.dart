@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:moneywiz/src/category.dart';
 import 'package:moneywiz/src/day.dart';
 import 'package:moneywiz/src/data.dart';
 import 'package:moneywiz/src/month.dart';
 import 'package:moneywiz/src/transaction.dart';
 import 'package:flutter/cupertino.dart';
+import 'dart:convert';
 
 class UpdateCategories extends StatefulWidget{
   @override
@@ -14,10 +16,10 @@ class UpdateCategories extends StatefulWidget{
 class _UpdateCategories extends State<StatefulWidget> {
 
 
-    List<String> temp_categories;
+    List<Category> temp_categories;
 
   _UpdateCategories() {
-    this.temp_categories = List.from(Data.expenseCategories);
+    this.temp_categories = deepCopyListCategories();
   }
 
   @override
@@ -46,7 +48,7 @@ class _UpdateCategories extends State<StatefulWidget> {
                             createCategoriesNewPopUp(context).then((onValue){
                               if (onValue != null && onValue != ""){
                                 setState(() {
-                                  temp_categories.add(onValue);
+                                  temp_categories.add(new Category(onValue));
                                 });
                               }
                             });
@@ -64,7 +66,7 @@ class _UpdateCategories extends State<StatefulWidget> {
                 shrinkWrap: true,
                 children: <Widget>[
                   for (int i = 0; i<temp_categories.length; i++)
-                    MyTile(i, temp_categories[i], changeName, removeName),
+                    MyTile(i, temp_categories[i].name, changeName, removeName),
 
                 ],
               ),
@@ -77,7 +79,7 @@ class _UpdateCategories extends State<StatefulWidget> {
                   child:  RaisedButton(
                       color: Colors.lightBlue,
                       onPressed: () {
-                        //Data.expenseCategories = temp_categories;
+                        Data.expenseCategories = temp_categories;
                         Navigator.of(context).pop();
                       },
                       child: Text("Apply"),
@@ -90,16 +92,24 @@ class _UpdateCategories extends State<StatefulWidget> {
     );
   }
 
+  List<Category> deepCopyListCategories(){
+    List<Category> new_list = new List<Category>();
+
+    for(int i = 0; i<Data.expenseCategories.length; i++){
+      new_list.add(new Category(Data.expenseCategories[i].name));
+    }
+    return new_list;
+  }
 
   changeName(String name, int id){
     setState(() {
-      temp_categories[id] = name;
+      temp_categories[id].name = name;
     });
   }
 
-  removeName(String name){
+  removeName(int id){
     setState(() {
-      temp_categories.remove(name);
+      print(temp_categories.removeAt(id));
     });
   }
 
@@ -137,7 +147,7 @@ class MyTile extends StatelessWidget{
   String name;
 
   Function(String new_name, int id) changeName;
-  Function(String name) removeName;
+  Function(int id) removeName;
 
   MyTile(id, name, changeName, removeName){
     this.id = id;
@@ -160,7 +170,7 @@ class MyTile extends StatelessWidget{
       onLongPress: (){
         createCategoriesRemovePopUp(context, name).then((onValue){
           if (onValue == true) {
-            removeName(name);
+            removeName(id);
           }
         });
       },
