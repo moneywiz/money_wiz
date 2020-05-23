@@ -1,7 +1,11 @@
-import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
+import 'package:moneywiz/src/category.dart';
 import 'package:moneywiz/src/month.dart';
 import 'package:moneywiz/src/data.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
+
+import 'indicator.dart';
 
 class StatsCategoryView extends StatefulWidget {
   @override
@@ -9,6 +13,8 @@ class StatsCategoryView extends StatefulWidget {
 }
 
 class _StatsCategoryViewState extends State<StatsCategoryView> {
+  int touchedIndex;
+
   @override
   Widget build(BuildContext context) {
     double deviceWidth = MediaQuery.of(context).size.width;
@@ -26,36 +32,133 @@ class _StatsCategoryViewState extends State<StatsCategoryView> {
               RaisedButton(child: Text("By Category")),
             ],
           ),
-          Container(
-            width: deviceWidth*0.7,
-            height: deviceHeight*0.3,
-            child: PieChart.build(PieChart._getData(Data.months[4]), animate: true),
-          )
+          SizedBox(
+            height: 16,
+          ),
+          DefaultTabController(
+            length: 2,
+            child: SizedBox(
+              height: 400.0,
+              child: Column(
+                children: <Widget>[
+                  TabBar(
+                    labelColor: Color(0xFF000000),
+                    unselectedLabelColor: Color(0xFF000000),
+                    tabs: <Widget>[
+                      Tab(
+                        text: "Expenses"
+                      ),
+                      Tab(
+                        text: "Income"
+                      )
+                    ],
+                  ),
+                  Expanded(
+                    child: TabBarView(
+                      children: <Widget>[
+                        Container(
+                            child: getPieChart(Data.months[4].ExpenseCategoryBalance)
+                        ),
+                        Container(
+                            child: getPieChart(Data.months[4].IncomeCategoryBalance)
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
-}
 
-class PieChart {
-
-  static Widget build(seriesList, {animate}) {
-    return new charts.PieChart(seriesList,
-        animate: animate,
-        defaultRenderer: new charts.ArcRendererConfig(
-            arcWidth: 60,
-            arcRendererDecorators: [new charts.ArcLabelDecorator()]));
+  Widget getPieChart(List<MapEntry<Category, double>> categoryBalance) {
+    return AspectRatio(
+      aspectRatio: 1.2,
+      child: Card(
+        color: Colors.white,
+        child: Row(
+          children: <Widget>[
+            const SizedBox(
+              height: 50,
+            ),
+            Expanded(
+              child: AspectRatio(
+                aspectRatio: 1,
+                child: PieChart(
+                  PieChartData(
+                      pieTouchData: PieTouchData(touchCallback: (pieTouchResponse) {
+                        setState(() {
+                          if (pieTouchResponse.touchInput is FlLongPressEnd ||
+                              pieTouchResponse.touchInput is FlPanEnd) {
+                            touchedIndex = -1;
+                          } else {
+                            touchedIndex = pieTouchResponse.touchedSectionIndex;
+                          }
+                        });
+                      }),
+                      borderData: FlBorderData(
+                        show: false,
+                      ),
+                      sectionsSpace: 0,
+                      centerSpaceRadius: 65,
+                      sections: showingSections(categoryBalance)),
+                ),
+              ),
+            ),
+            Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: getIndicators(categoryBalance)
+            ),
+            const SizedBox(
+              width: 28,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
-  static List<charts.Series<MapEntry<String, double>, String>> _getData(Month month) {
-    return [
-      new charts.Series<MapEntry<String, double>, String>(
-        id: 'Sales',
-        domainFn: (MapEntry<String, double> entry, _) => entry.key,
-        measureFn: (MapEntry<String, double> entry, _) => entry.value,
-        data: month.CategoryBalance.entries.toList(),
-        labelAccessorFn: (MapEntry<String, double> row, _) => '${row.key}: ${row.value}',
-      )
-    ];
+  List<PieChartSectionData> showingSections(List<MapEntry<Category, double>> categoryBalance) {
+    return List.generate(categoryBalance.length, (i) {
+      final isTouched = i == touchedIndex;
+      final double fontSize = (touchedIndex == -1 || touchedIndex == null || isTouched) ? (isTouched ? 17 : 11) : 0;
+      final double radius = isTouched ? 60 : 50;
+      return PieChartSectionData(
+        color: categoryBalance[i].key.color,
+        value: categoryBalance[i].value,
+        title: categoryBalance[i].value.toStringAsFixed(2) + '€',
+        radius: radius,
+        titleStyle: TextStyle(
+            fontSize: fontSize, fontWeight: FontWeight.bold, color: const Color(0xffffffff)),
+      );
+    });
   }
+
+  List<Widget> getIndicators(List<MapEntry<Category, double>> categoryBalance) {
+    List<Widget> res = List();
+    for(MapEntry<Category, double> entry in categoryBalance) {
+      res.addAll([
+        Indicator(
+          color: entry.key.color,
+          text: entry.key.name,
+          isSquare: true,
+        ),
+        SizedBox(
+          height: 4,
+        )
+      ]);
+    }
+    res.add(
+      SizedBox(
+        height: 18,
+      ),
+    );
+    return res;
+  }
+
 }

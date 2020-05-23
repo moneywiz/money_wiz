@@ -1,8 +1,11 @@
 import 'package:moneywiz/src/day.dart';
 
+import 'category.dart';
+
 class Month {
 
   static var _months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  static Category _others = Category("Others");
 
   int year;
   int month;
@@ -17,16 +20,43 @@ class Month {
     days.add(d);
   }
 
-  get CategoryBalance {
-    Map<String, double> map = Map();
+  get ExpenseCategoryBalance {
+    Map<Category, double> map = Map();
     map.entries.toList();
     for (var d in days) {
-      Map<String, double> dayMap = d.CategoryBalance;
+      Map<Category, double> dayMap = d.ExpenseCategoryBalance;
       for (var c in dayMap.keys) {
         map[c] = map.containsKey(c) ? map[c] + dayMap[c]: dayMap[c];
       }
     }
-    return map;
+    List<MapEntry<Category, double>> lst = map.entries.toList();
+    lst.sort((a, b) => b.value.compareTo(a.value));
+    double rest_val = 0;
+    lst.sublist(8).forEach((MapEntry<Category, double> e){rest_val += e.value;});
+    lst[8] = MapEntry(_others, rest_val);
+    return lst.sublist(0, 9);
+  }
+
+  get IncomeCategoryBalance {
+    Map<Category, double> map = Map();
+
+    for (var d in days) {
+      Map<Category, double> dayMap = d.IncomeCategoryBalance;
+      for (var c in dayMap.keys) {
+        map[c] = map.containsKey(c) ? map[c] + dayMap[c]: dayMap[c];
+      }
+    }
+    List<MapEntry<Category, double>> lst = map.entries.toList();
+    lst.sort((a, b) => a.value.compareTo(b.value));
+    double rest_val = 0;
+    if (lst.length > 7) {
+      lst.sublist(5).forEach((MapEntry<Category, double> e) {
+        rest_val += e.value;
+      });
+      lst[5] = MapEntry(_others, rest_val);
+      return lst.sublist(0, 6);
+    }
+    return lst;
   }
 
   get positive {
