@@ -1,5 +1,7 @@
+import 'package:moneywiz/src/category.dart';
 import 'package:moneywiz/src/month.dart';
 import 'package:moneywiz/src/transaction.dart';
+import 'package:moneywiz/src/data.dart';
 
 class Day {
 
@@ -27,11 +29,21 @@ class Day {
     _negative += t.value < 0 ? t.value : 0;
   }
 
-  get CategoryBalance {
-    Map<String, double> map = Map();
+  get ExpenseCategoryBalance {
+    Map<Category, double> map = Map();
     for (var t in transactions) {
       for (var c in t.categories) {
-        map[c] = map.containsKey(c) ? map[c] + t.value.abs(): t.value.abs();
+        if (Data.expenseCategories.contains(c)) map[c] = map.containsKey(c) ? map[c] + t.value.abs(): t.value.abs();
+      }
+    }
+    return map;
+  }
+
+  get IncomeCategoryBalance {
+    Map<Category, double> map = Map();
+    for (var t in transactions) {
+      for (var c in t.categories) {
+        if (Data.incomeCategories.contains(c)) map[c] = map.containsKey(c) ? map[c] + t.value.abs(): t.value.abs();
       }
     }
     return map;
