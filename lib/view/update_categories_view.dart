@@ -79,7 +79,7 @@ class _UpdateCategories extends State<StatefulWidget> {
                   child:  RaisedButton(
                       color: Colors.lightBlue,
                       onPressed: () {
-                        //Data.expenseCategories = temp_categories;
+                        Data.expenseCategories = temp_categories;
                         Navigator.of(context).pop();
                       },
                       child: Text("Apply"),
