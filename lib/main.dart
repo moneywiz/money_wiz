@@ -5,6 +5,7 @@ import 'package:moneywiz/view/month_view.dart';
 import 'package:moneywiz/view/stats_category_view.dart';
 import 'package:moneywiz/view/stats_month_view.dart';
 import 'package:moneywiz/src/data.dart';
+import 'package:moneywiz/view/update_categories_view.dart';
 
 void main() => runApp(MoneyWiz());
 
@@ -17,7 +18,7 @@ class MoneyWiz extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MonthView(Data.months[3]),
+      home: UpdateCategories(),
     );
   }
 }
