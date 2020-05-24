@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:moneywiz/src/data.dart';
 import 'package:moneywiz/src/day.dart';
+import 'package:moneywiz/src/month.dart';
 import 'package:moneywiz/src/transaction.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_calendar_carousel/src/calendar_header.dart';
 
 class DayView extends StatefulWidget {
   final Day day;
@@ -58,20 +60,25 @@ class _DayViewState extends State<DayView> {
         _getPosNegStats(),
         Text("Total Balance", style: TextStyle(fontSize: 32)),
         Text((day.balance>=0?"+":"")+"${format.format(day.balance)}€", style: TextStyle(fontSize: 80, color: (day.balance>=0?Colors.green:Colors.red))),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            IconButton(
-              icon: Icon(Icons.arrow_left, color: Colors.black),
-              onPressed: () {_changeDay(true);},
-              iconSize: 64,
-            ),
-            IconButton(
-              icon: Icon(Icons.arrow_right, color: Colors.black),
-              onPressed: () {_changeDay(false);},
-              iconSize: 64,
-            ),
-          ],
+        Padding(
+            padding: EdgeInsets.fromLTRB(100, 0, 100, 0),
+            child: CalendarHeader(
+                showHeader: true,
+                headerTitle: "${day.month.monthString} ${day.day}",
+                onLeftButtonPressed: (){
+                  this.setState(() {
+                    _changeDay(true);
+                  });
+                },
+                onRightButtonPressed: (){
+                  this.setState(() {
+                    _changeDay(false);
+                  });
+                },
+                showHeaderButtons: true,
+                isTitleTouchable: false,
+                onHeaderTitlePressed: null
+            )
         )
       ],
     );
@@ -167,8 +174,6 @@ class _DayViewState extends State<DayView> {
 
 
   _changeDay(bool prev) {
-    //TODO fetch from somewhere else
-    int y=day.month.year;
     int m=day.month.month;
     int d=day.day;
     Day next=day;
@@ -183,9 +188,7 @@ class _DayViewState extends State<DayView> {
       if (day.isLast()) {
         if (m < 6) next=Data.months[m].days[0];
       }
-      else {
-        next=Data.months[m-1].days[d];
-      }
+      else next=Data.months[m-1].days[d];
     }
 
     setState(() {

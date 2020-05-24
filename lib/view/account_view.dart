@@ -1,71 +1,96 @@
 import 'package:flutter/material.dart';
+import 'package:moneywiz/src/account.dart';
 import 'package:moneywiz/src/day.dart';
 import 'package:moneywiz/src/data.dart';
 import 'package:moneywiz/src/month.dart';
-import 'package:moneywiz/src/transaction.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:moneywiz/view/limit_view.dart';
 import 'package:moneywiz/view/stats_view.dart';
 import 'package:moneywiz/view/update_categories_view.dart';
-import 'package:moneywiz/view/stats_month_view.dart';
 import 'package:moneywiz/view/day_view.dart';
 
-class Account extends StatefulWidget{
+class AccountView extends StatefulWidget{
   @override
-  State<StatefulWidget> createState() => _Account();
+  State<StatefulWidget> createState() => AccountViewState();
 }
 
 
-class _Account extends State<StatefulWidget> {
+class AccountViewState extends State<StatefulWidget> {
 
-  String account_name = "Account 1";
-  String account_description = "Account to organise the money that I spend when I am at the University";
-  int account_balance = 20;
-
-
+  static final Account _add = Account("Create New Account", null, null);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Account"),
-      ),
-      body:
-      Column(
-        children: <Widget>[
-          Expanded(
-            flex:3,
-            child:
-             Container(
-               color: Colors.blue,
-               child: Row(
-                 children: <Widget>[
-                   Padding(
-                      padding: EdgeInsets.only(left:15.0),
-                      child: Text("$account_name",
-                        style: TextStyle(fontSize: 17, color: Colors.white),),
-                    ),
-                 ],
-                ),
+        title: Text("MoneyWiz"),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(48.0),
+          child: Container(
+            alignment: Alignment.centerLeft,
+            padding: EdgeInsets.fromLTRB(18, 0, 0, 0),
+            child: DropdownButton<Account>(
+              hint: Row(
+                children: <Widget>[
+                  Text("Account: ",
+                    style: TextStyle(fontSize: 16, color: Colors.white),),
+                  Text(Data.account.toString(),
+                    style: TextStyle(fontSize: 17, color: Colors.white, fontWeight: FontWeight.bold),),
+                ],
               ),
+              icon: Icon(Icons.expand_more),
+              iconEnabledColor: Colors.white,
+              iconDisabledColor: Colors.white,
+              iconSize: 24,
+              elevation: 16,
+              underline: Container(
+                height: 2,
+                color: Colors.blue,
+              ),
+              onChanged: (Account newValue) {
+                if (newValue != _add) {
+                  setState(() {
+                    Data.account = newValue;
+                  });
+                }
+                else {
+                  // TODO - Add Account Form
+                }
+              },
+              items: getAccounts(),
+            ),
+          )
+        )
+      ),
+      body: Column(
+        children: <Widget>[
+          Column(
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.fromLTRB(18, 25, 0, 0),
+                alignment: Alignment.centerLeft,
+                child: Text("Description: ", style: TextStyle(fontSize: 15)),
+              ),
+              Container(
+                padding: EdgeInsets.fromLTRB(30, 14, 0, 0),
+                alignment: Alignment.centerLeft,
+                child: Text(Data.account.description, style: TextStyle(fontSize: 18)),
+              ),
+              Container(
+                padding: EdgeInsets.fromLTRB(18, 35, 0, 0),
+                alignment: Alignment.centerLeft,
+                child: Text("Balance: ", style: TextStyle(fontSize: 15)),
+              ),
+              Container(
+                padding: EdgeInsets.fromLTRB(30, 18, 0, 0),
+                alignment: Alignment.centerLeft,
+                child: Text((Data.account.balance as double).toStringAsFixed(2) + " €",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: (Data.account.balance as double) > 0 ? Colors.green : Colors.red),),
+              )
+            ],
           ),
           Expanded(
-            flex: 11,
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(15.0),
-                  child: Text("$account_description", style: TextStyle(fontSize: 18),),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 50.0),
-                  child: Text("Balance : $account_balance €" , style: TextStyle(fontSize: 18),),
-                ),
-              ],
-            ),
-          ),
-          Expanded(flex: 25,
-            child:Container(
+            child: Container(
               padding: EdgeInsets.only(top: 20),
               child: ListView(
                 padding: const EdgeInsets.only(left:20),
@@ -132,7 +157,6 @@ class _Account extends State<StatefulWidget> {
                       Navigator.of(context).push( MaterialPageRoute(builder: (context) => (UpdateCategories())));
                     },
                   ),
-
                 ],
               ),
             )
@@ -140,5 +164,28 @@ class _Account extends State<StatefulWidget> {
         ],
       ),
     );
+  }
+
+  List<DropdownMenuItem> getAccounts() {
+    List<DropdownMenuItem> res = Data.accounts.map<DropdownMenuItem<Account>>((Account value) {
+      return DropdownMenuItem<Account>(
+        value: value,
+        child: Text(value.name,
+          style: TextStyle(inherit: false, fontSize: 17, color: Colors.black),),
+      );
+    }).toList();
+    res.add(
+      DropdownMenuItem<Account>(
+        value: _add,
+        child: Row (
+          children: <Widget>[
+            Icon(Icons.add),
+            Text("  Create New Account",
+              style: TextStyle(inherit: false, fontSize: 17, color: Colors.black),),
+          ],
+        )
+      )
+    );
+    return res;
   }
 }

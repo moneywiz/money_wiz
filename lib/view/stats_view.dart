@@ -37,8 +37,7 @@ class _StatsViewState extends State<StatsView> {
           ),
           body: Column(
             children: [
-              SizedBox(
-                height: 570.0,
+              Expanded(
                 child: TabBarView(
                     children: [
                       StatsMonthView(Data.months[widget.month]),
