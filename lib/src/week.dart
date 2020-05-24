@@ -3,11 +3,12 @@ import 'package:moneywiz/src/month.dart';
 
 class Week {
 
-  static var _weekDays=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
-
   List<Day> days;
+  bool twoMonths;
 
-  Week(this.days);
+  Week(this.days){
+    twoMonths=days[0].month.month==days[6].month.month;
+  }
 
   get positive {
     double pos=0;

@@ -22,45 +22,37 @@ class _StatsCategoryViewState extends State<StatsCategoryView> with AutomaticKee
 
   @override
   Widget build(BuildContext context) {
-    double deviceWidth = MediaQuery.of(context).size.width;
-    double deviceHeight = MediaQuery.of(context).size.height;
-    return Column(
+    super.build(context);
+    return DefaultTabController(
+      length: 2,
+      child: Column(
         children: <Widget>[
-          DefaultTabController(
-            length: 2,
-            child: SizedBox(
-              height: 520.0,
-              child: Column(
-                children: <Widget>[
-                  TabBar(
-                    labelColor: Color(0xFF000000),
-                    unselectedLabelColor: Color(0xFF000000),
-                    tabs: <Widget>[
-                      Tab(
-                        text: "Expenses"
-                      ),
-                      Tab(
-                        text: "Income"
-                      )
-                    ],
-                  ),
-                  Expanded(
-                    child: TabBarView(
-                      children: <Widget>[
-                        Container(
-                            child: getPieChart(widget.month.ExpenseCategoryBalance)
-                        ),
-                        Container(
-                            child: getPieChart(widget.month.IncomeCategoryBalance)
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+          TabBar(
+            labelColor: Color(0xFF000000),
+            unselectedLabelColor: Color(0xFF000000),
+            tabs: <Widget>[
+              Tab(
+                text: "Expenses"
               ),
+              Tab(
+                text: "Income"
+              )
+            ],
+          ),
+          Expanded(
+            child: TabBarView(
+              children: <Widget>[
+                Container(
+                  child: getPieChart(widget.month.ExpenseCategoryBalance)
+                ),
+                Container(
+                  child: getPieChart(widget.month.IncomeCategoryBalance)
+                ),
+              ],
             ),
           ),
         ],
+      ),
     );
   }
 

@@ -18,55 +18,47 @@ class StatsMonthView extends StatefulWidget {
 class _StatsMonthViewState extends State<StatsMonthView> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
-    double deviceWidth = MediaQuery.of(context).size.width;
-    double deviceHeight = MediaQuery.of(context).size.height;
-    return Column(
+    super.build(context);
+    return DefaultTabController(
+      length: 2,
+      child: Column(
         children: <Widget>[
-          DefaultTabController(
-            length: 2,
-            child: SizedBox(
-              height: 520.0,
-              child: Column(
-                children: <Widget>[
-                  TabBar(
-                    labelColor: Color(0xFF000000),
-                    unselectedLabelColor: Color(0xFF000000),
-                    tabs: <Widget>[
-                      Tab(
-                          text: "Expenses"
-                      ),
-                      Tab(
-                          text: "Income"
-                      )
-                    ],
-                  ),
-                  Expanded(
-                    child: TabBarView(
-                      children: <Widget>[
-                        Container(
-                            child: StatsBarChart(
-                                month: widget.month,
-                                func: (Day d, {Category category}) => d.getNegative(category: category).abs(),
-                                barColor: const Color(0xffff5182),
-                                categories: Data.expenseCategories
-                            ),
-                        ),
-                        Container(
-                            child: StatsBarChart(
-                                month: widget.month,
-                                func: (Day d, {Category category}) => d.getPositive(category: category),
-                                barColor: const Color(0xff53fdd7),
-                                categories: Data.incomeCategories
-                            ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+          TabBar(
+            labelColor: Color(0xFF000000),
+            unselectedLabelColor: Color(0xFF000000),
+            tabs: <Widget>[
+              Tab(
+                text: "Expenses"
               ),
+              Tab(
+                text: "Income"
+              )
+            ],
+          ),
+          Expanded(
+            child: TabBarView(
+              children: <Widget>[
+                Container(
+                  child: StatsBarChart(
+                    month: widget.month,
+                    func: (Day d, {Category category}) => d.getNegative(category: category).abs(),
+                    barColor: const Color(0xffff5182),
+                    categories: Data.expenseCategories
+                  ),
+                ),
+                Container(
+                  child: StatsBarChart(
+                    month: widget.month,
+                    func: (Day d, {Category category}) => d.getPositive(category: category),
+                    barColor: const Color(0xff53fdd7),
+                    categories: Data.incomeCategories
+                  ),
+                ),
+              ],
             ),
           ),
         ],
+      ),
     );
   }
 
