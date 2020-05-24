@@ -1,17 +1,14 @@
 import 'dart:ui';
 import 'dart:math' as math;
+import 'package:flutter/material.dart';
 
 class Category {
 
-  static math.Random rnd = null;
-
   String name;
   Color color;
+  IconData icon;
 
-  Category(this.name) {
-    if (rnd == null) rnd = math.Random();
-    color = Color(rnd.nextInt(0xffffffff));
-  }
+  Category(this.name, this.color, this.icon);
 
   String toString() => name;
 

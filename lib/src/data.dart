@@ -1,4 +1,6 @@
 import 'dart:math';
+import 'dart:ui';
+import 'package:flutter/material.dart';
 import 'package:moneywiz/src/account.dart';
 import 'package:moneywiz/src/category.dart';
 import 'package:moneywiz/src/day.dart';
@@ -6,7 +8,7 @@ import 'package:moneywiz/src/month.dart';
 import 'package:moneywiz/src/transaction.dart';
 
 class Data {
-  Random random = new Random();
+  static Random random = new Random();
 
   static Account account;
 
@@ -22,32 +24,36 @@ class Data {
   ];
 
   static List<Category> incomeCategories = [
-    Category("Salary"),
-    Category("Refund"),
-    Category("Gift")
+    Category("Salary", Color(random.nextInt(0xffffffff)), Icons.add),
+    Category("Refund", Color(random.nextInt(0xffffffff)), Icons.add),
+    Category("Gift", Color(random.nextInt(0xffffffff)), Icons.add)
   ];
 
   static List<Category> expenseCategories = [
-    Category("Restaurants"),
-    Category("Groceries"),
-    Category("Leisure"),
-    Category("Games"),
-    Category("Movies & Music"),
-    Category("Snacks"),
-    Category("Transportation"),
-    Category("Debts"),
-    Category("Taxes"),
-    Category("Rent"),
-    Category("Subscriptions"),
-    Category("Tuition"),
-    Category("Gift"),
-    Category("Clothes"),
-    Category("Hobbies"),
-    Category("Beverages")
+    Category("Restaurants", Color(random.nextInt(0xffffffff)), Icons.add),
+    Category("Groceries", Color(random.nextInt(0xffffffff)), Icons.add),
+    Category("Leisure", Color(random.nextInt(0xffffffff)), Icons.add),
+    Category("Games", Color(random.nextInt(0xffffffff)), Icons.add),
+    Category("Movies & Music", Color(random.nextInt(0xffffffff)), Icons.add),
+    Category("Snacks", Color(random.nextInt(0xffffffff)), Icons.add),
+    Category("Transportation", Color(random.nextInt(0xffffffff)), Icons.add),
+    Category("Debts", Color(random.nextInt(0xffffffff)), Icons.add),
+    Category("Taxes", Color(random.nextInt(0xffffffff)), Icons.add),
+    Category("Rent", Color(random.nextInt(0xffffffff)), Icons.add),
+    Category("Subscriptions", Color(random.nextInt(0xffffffff)), Icons.add),
+    Category("Tuition", Color(random.nextInt(0xffffffff)), Icons.add),
+    Category("Gift", Color(random.nextInt(0xffffffff)), Icons.add),
+    Category("Clothes", Color(random.nextInt(0xffffffff)), Icons.add),
+    Category("Hobbies", Color(random.nextInt(0xffffffff)), Icons.add),
+    Category("Beverages", Color(random.nextInt(0xffffffff)), Icons.add)
   ];
 
   Data(){
     for(Account a in accounts) {
+      for (Category c in expenseCategories) {
+        a.budgets[c] = random.nextInt(400) + 601.0;
+      }
+
       a.months = List();
       for (var i in Iterable<int>.generate(6).toList()) {
         Month month = Month(2020, i + 1);
@@ -56,7 +62,7 @@ class Data {
           Day d = Day(month, j + 1);
           for (var k in Iterable<int>.generate(random.nextInt(6)).toList()) {
             bool expense = random.nextInt(100) < 85;
-            int randomNumber = random.nextInt(150) + 1;
+            int randomNumber = random.nextInt(expense ? 150 : 500) + (expense ? 1 : 51);
             randomNumber *= expense ? -1 : 1;
             Transaction t = Transaction(d, randomNumber +
                 double.parse(random.nextDouble().toStringAsFixed(2)),
