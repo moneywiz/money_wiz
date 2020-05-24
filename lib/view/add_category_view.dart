@@ -12,24 +12,63 @@ import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 
 class AddCategoryView extends StatefulWidget{
   @override
-  State<StatefulWidget> createState() => _AddCategoryView();
+  State<StatefulWidget> createState() => _AddCategoryView(newCategory, updateCategory, tipo, c, limit, id);
+
+  Function(Category c, String limit) newCategory;
+  Function(Category c, String limit, int id) updateCategory;
+  String tipo;
+  Category c;
+  double limit;
+  int id;
+
+
+  AddCategoryView(newCategory, updateCategory, tipo, c, limit, id){
+    this.newCategory = newCategory;
+    this.tipo = tipo;
+    this.c = c;
+    this.limit = limit;
+    this.id = id;
+    this.updateCategory = updateCategory;
+  }
 }
 
 
 class _AddCategoryView extends State<StatefulWidget> {
+
+  String tipo;
+  int id;
 
   Color pickerColor ;
   Color currentColor = Color(0xff443a48);
   String name = "";
   String limit = "";
   Icon _icon ;
+  IconData _icondata;
 
+  Function(Category c, String limit) newCategory;
+  Function(Category c, String limit, int id) updateCategory;
+
+  _AddCategoryView(newCategory, updateCategory, tipo, c, limit, id){
+    if (tipo == "new"){
+      this.newCategory = newCategory;
+      this.tipo = tipo;
+    }
+    else{
+      name = c.name;
+      pickerColor = c.color;
+      _icondata = c.icon;
+      this.limit = limit.toString();
+      _icon = Icon(_icondata);
+      this.id = id;
+      this.updateCategory = updateCategory;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("New Category"),
+        title: tipo == "new" ? Text("New Category") : Text("Changing Category"),
       ),
       body:
       Column(
@@ -89,30 +128,33 @@ class _AddCategoryView extends State<StatefulWidget> {
                   indent: 1,
                   endIndent: 10,
                 ),
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: ListTile(
-                        title: Text("Color"),
-                        onTap: (){
-                          selectColorPopUp(context);
-                        },
+                InkWell(
+                  onTap: (){
+                    selectColorPopUp(context);
+                  },
+                  child:
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: ListTile(
+                          title: Text("Color"),
+                        ),
                       ),
-                    ),
-                    Expanded(
-                      child:
-                      Padding(
-                        padding: EdgeInsets.only(right: 0.0),
-                        child: Container(
-                          height: 60,
-                          decoration: BoxDecoration(
-                              color: pickerColor,
-                              shape: BoxShape.circle
+                      Expanded(
+                        child:
+                        Padding(
+                          padding: EdgeInsets.only(right: 0.0),
+                          child: Container(
+                            height: 60,
+                            decoration: BoxDecoration(
+                                color: pickerColor,
+                                shape: BoxShape.circle
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 const Divider(
                   color: Colors.black12,
@@ -121,24 +163,27 @@ class _AddCategoryView extends State<StatefulWidget> {
                   indent: 1,
                   endIndent: 10,
                 ),
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: ListTile(
-                        title: Text("Icon"),
-                        onTap: (){
-                          _pickIcon();
-                        },
+                InkWell(
+                  onTap: (){
+                    _pickIcon();
+                  },
+                  child:
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: ListTile(
+                          title: Text("Icon"),
+                        ),
                       ),
-                    ),
-                    Expanded(
-                      child:
-                      Padding(
-                        padding: EdgeInsets.only(right: 0.0),
-                        child: _icon,
+                      Expanded(
+                        child:
+                        Padding(
+                          padding: EdgeInsets.only(right: 0.0),
+                          child: _icon,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -149,9 +194,19 @@ class _AddCategoryView extends State<StatefulWidget> {
               child: Padding(
                 padding: EdgeInsets.only(right: 20.0),
                 child: RaisedButton(
-                  child: Text("Create", style: TextStyle(fontSize: 14, color: Colors.white),),
+                  child: (tipo == "new") ? Text("Create", style: TextStyle(fontSize: 14, color: Colors.white),) : Text("Submit", style: TextStyle(fontSize: 14, color: Colors.white),),
                   color: Colors.blue,
-                  onPressed: (){},
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                    Category c = new Category(name, pickerColor, _icondata);
+                    if(tipo == "new"){
+                      newCategory(c, limit);
+                    }
+                    else{
+                      updateCategory(c, limit, id);
+                    }
+
+                  },
                 ),
               ),
             ),
@@ -164,12 +219,12 @@ class _AddCategoryView extends State<StatefulWidget> {
   }
 
   _pickIcon() async {
-    IconData icon = await FlutterIconPicker.showIconPicker(context, iconPackMode: IconPack.materialOutline);
+    IconData _icondata = await FlutterIconPicker.showIconPicker(context, iconPackMode: IconPack.material);
 
-    _icon = Icon(icon, size: 50);
+    _icon = Icon(_icondata, size: 50);
     setState((){});
 
-    print('Picked Icon:  $icon');
+    print('Picked Icon:  $_icondata');
   }
 
    selectColorPopUp(BuildContext context){
