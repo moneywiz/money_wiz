@@ -1,3 +1,4 @@
+import 'package:moneywiz/src/category.dart';
 import 'package:moneywiz/src/month.dart';
 
 class Account {
@@ -5,9 +6,11 @@ class Account {
   String description;
   List<Month> months;
   double startingBalance;
+  Map<Category, double> budgets;
 
   Account(this.name, this.description, this.startingBalance){
     months = List();
+    budgets = Map();
   }
 
   get balance {

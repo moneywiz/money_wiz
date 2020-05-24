@@ -48,7 +48,7 @@ class _UpdateCategories extends State<StatefulWidget> {
                             createCategoriesNewPopUp(context).then((onValue){
                               if (onValue != null && onValue != ""){
                                 setState(() {
-                                  temp_categories.add(new Category(onValue));
+                                  //temp_categories.add(new Category(onValue));
                                 });
                               }
                             });
@@ -96,7 +96,7 @@ class _UpdateCategories extends State<StatefulWidget> {
     List<Category> new_list = new List<Category>();
 
     for(int i = 0; i<Data.expenseCategories.length; i++){
-      new_list.add(new Category(Data.expenseCategories[i].name));
+      //new_list.add(new Category(Data.expenseCategories[i].name));
     }
     return new_list;
   }

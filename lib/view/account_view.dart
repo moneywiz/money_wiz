@@ -139,7 +139,7 @@ class AccountViewState extends State<StatefulWidget> {
                     subtitle: Text("set monthly limits"),
                     leading: Icon(Icons.flag, color: Colors.blue),
                     onTap: (){
-                      Navigator.of(context).push( MaterialPageRoute(builder: (context) => Limit()));
+                      Navigator.of(context).push( MaterialPageRoute(builder: (context) => Limit(4)));
                     },
                   ),
                   const Divider(

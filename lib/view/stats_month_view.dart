@@ -73,7 +73,7 @@ class StatsBarChart extends StatefulWidget {
   final Color barColor;
   List<Category> categories;
 
-  static final Category _all = Category('All');
+  static final Category _all = Category('All', null, null);
 
   StatsBarChart({
     this.month,

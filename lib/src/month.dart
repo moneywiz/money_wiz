@@ -1,3 +1,5 @@
+import 'dart:ui';
+import 'dart:math' as math;
 import 'package:moneywiz/src/day.dart';
 
 import 'category.dart';
@@ -5,7 +7,7 @@ import 'category.dart';
 class Month {
 
   static var months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-  static Category _others = Category("Others");
+  static Category _others = Category("Others", Color(math.Random().nextInt(0xffffffff)), null);
 
   int year;
   int month;
@@ -18,6 +20,15 @@ class Month {
 
   addDay(Day d) {
     days.add(d);
+  }
+
+  double spentOnCategory(Category c){
+    double res = 0;
+    for (var d in days) {
+      Map<Category, double> dayMap = d.ExpenseCategoryBalance;
+      res += dayMap.containsKey(c) ? dayMap[c] : 0;
+    }
+    return res;
   }
 
   get ExpenseCategoryBalance {
