@@ -10,18 +10,19 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 
 
-class AddCategory extends StatefulWidget{
+class AddCategoryView extends StatefulWidget{
   @override
-  State<StatefulWidget> createState() => _AddCategory();
+  State<StatefulWidget> createState() => _AddCategoryView();
 }
 
 
-class _AddCategory extends State<StatefulWidget> {
+class _AddCategoryView extends State<StatefulWidget> {
 
-  Color pickerColor = Color(0xff443a49);
+  Color pickerColor ;
   Color currentColor = Color(0xff443a48);
-
-  Icon _icon;
+  String name = "";
+  String limit = "";
+  Icon _icon ;
 
 
   @override
@@ -34,64 +35,128 @@ class _AddCategory extends State<StatefulWidget> {
       Column(
         children: <Widget>[
           Expanded(
-            flex: 1,
-            child: Column(
+            child: ListView(
+              padding: const EdgeInsets.only(left:20),
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
               children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(left: 0.0),
-                  child: Text("Category Name: "),
+                const Divider(
+                  color: Colors.black12,
+                  height: 20,
+                  thickness: 1,
+                  indent: 1,
+                  endIndent: 10,
                 ),
-                Padding(
-                  padding: EdgeInsets.only(left: 0.0),
-                  child: TextField(
-                  ),
+                ListTile(
+                  title: Text("Category Name"),
+                  subtitle: name == "" ? Text("Not Selected") : Text("$name", style: TextStyle(color: Colors.blue),),
+                  onTap: (){
+                    createCategoriesNewPopUp(context).then((onValue){
+                      if (onValue != null) {
+                        setState(() {
+                          name = onValue;
+                        });
+                      }
+                    });
+
+                  },
                 ),
-              ],
-            )
-          ),
-          Expanded(
-              flex: 2,
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(left: 0.0),
-                    child: RaisedButton(
-                      child: Text("Select Color"),
-                      onPressed: (){ selectColorPopUp(context);},
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 0.0),
-                    child: Container(
-                      height: 100,
-                      decoration: BoxDecoration(
-                        color: pickerColor,
-                        shape: BoxShape.circle
+                const Divider(
+                  color: Colors.black12,
+                  height: 20,
+                  thickness: 1,
+                  indent: 1,
+                  endIndent: 10,
+                ),
+                ListTile(
+                  title: Text("Max Monthly Limit"),
+                  subtitle: limit == "" ? Text("Non-Limit") : Text("$limit €", style: TextStyle(color: Colors.blue),),
+                  onTap: (){
+                    createCategoriesNewPopUp(context).then((onValue){
+                      if (onValue != null) {
+                        setState(() {
+                          limit = onValue;
+                        });
+                      }
+                    });
+
+                  },
+                ),
+                const Divider(
+                  color: Colors.black12,
+                  height: 20,
+                  thickness: 1,
+                  indent: 1,
+                  endIndent: 10,
+                ),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: ListTile(
+                        title: Text("Color"),
+                        onTap: (){
+                          selectColorPopUp(context);
+                        },
                       ),
                     ),
-                  ),
-                ],
+                    Expanded(
+                      child:
+                      Padding(
+                        padding: EdgeInsets.only(right: 0.0),
+                        child: Container(
+                          height: 60,
+                          decoration: BoxDecoration(
+                              color: pickerColor,
+                              shape: BoxShape.circle
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-            ),
-          Expanded(
-            flex: 2,
-            child: Row(
-              children : <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(left: 0.0),
-                  child: RaisedButton(
-                    onPressed: _pickIcon,
-                    child: Text('Open IconPicker'),
-                  ),
+                const Divider(
+                  color: Colors.black12,
+                  height: 20,
+                  thickness: 1,
+                  indent: 1,
+                  endIndent: 10,
                 ),
-                Padding(
-                  padding: EdgeInsets.only(left: 0.0),
-                  child: _icon,
-                )
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: ListTile(
+                        title: Text("Icon"),
+                        onTap: (){
+                          _pickIcon();
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      child:
+                      Padding(
+                        padding: EdgeInsets.only(right: 0.0),
+                        child: _icon,
+                      ),
+                    ),
+                  ],
+                ),
               ],
-            )
+            ),
+          ),
+          Expanded(
+            child: Align(
+              alignment: FractionalOffset.bottomRight,
+              child: Padding(
+                padding: EdgeInsets.only(right: 20.0),
+                child: RaisedButton(
+                  child: Text("Create", style: TextStyle(fontSize: 14, color: Colors.white),),
+                  color: Colors.blue,
+                  onPressed: (){},
+                ),
+              ),
+            ),
+          ),
 
-          )
 
         ],
       ),
@@ -101,7 +166,7 @@ class _AddCategory extends State<StatefulWidget> {
   _pickIcon() async {
     IconData icon = await FlutterIconPicker.showIconPicker(context, iconPackMode: IconPack.materialOutline);
 
-    _icon = Icon(icon);
+    _icon = Icon(icon, size: 50);
     setState((){});
 
     print('Picked Icon:  $icon');
@@ -125,6 +190,30 @@ class _AddCategory extends State<StatefulWidget> {
               }),
               ],
             );
+    });
+  }
+
+
+  Future<String> createCategoriesNewPopUp(BuildContext context){
+
+    TextEditingController customController = TextEditingController();
+
+    return showDialog(context: context, builder: (context){
+      return AlertDialog(
+          title: Text("Category Name"),
+          content: TextField(
+            controller: customController,
+          ),
+          actions: <Widget>[
+            MaterialButton(
+              elevation: 5.0,
+              child: Text("Submit"),
+              onPressed: () {
+                Navigator.of(context).pop(customController.text.toString());
+              },
+            ),
+          ]
+      );
     });
   }
 
