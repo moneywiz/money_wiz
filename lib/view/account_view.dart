@@ -62,39 +62,35 @@ class AccountViewState extends State<StatefulWidget> {
           )
         )
       ),
-      body:
-      Column(
+      body: Column(
         children: <Widget>[
-          Expanded(
-            flex: 11,
-            child: Column(
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.fromLTRB(18, 25, 0, 0),
-                  alignment: Alignment.centerLeft,
-                  child: Text("Description: ", style: TextStyle(fontSize: 15)),
-                ),
-                Container(
-                  padding: EdgeInsets.fromLTRB(30, 14, 0, 0),
-                  alignment: Alignment.centerLeft,
-                  child: Text(Data.account.description, style: TextStyle(fontSize: 18)),
-                ),
-                Container(
-                  padding: EdgeInsets.fromLTRB(18, 35, 0, 0),
-                  alignment: Alignment.centerLeft,
-                  child: Text("Balance: ", style: TextStyle(fontSize: 15)),
-                ),
-                Container(
-                  padding: EdgeInsets.fromLTRB(30, 18, 0, 0),
-                  alignment: Alignment.centerLeft,
-                  child: Text((Data.account.balance as double).toStringAsFixed(2) + " €",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: (Data.account.balance as double) > 0 ? Colors.green : Colors.red),),
-                )
-              ],
-            ),
+          Column(
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.fromLTRB(18, 25, 0, 0),
+                alignment: Alignment.centerLeft,
+                child: Text("Description: ", style: TextStyle(fontSize: 15)),
+              ),
+              Container(
+                padding: EdgeInsets.fromLTRB(30, 14, 0, 0),
+                alignment: Alignment.centerLeft,
+                child: Text(Data.account.description, style: TextStyle(fontSize: 18)),
+              ),
+              Container(
+                padding: EdgeInsets.fromLTRB(18, 35, 0, 0),
+                alignment: Alignment.centerLeft,
+                child: Text("Balance: ", style: TextStyle(fontSize: 15)),
+              ),
+              Container(
+                padding: EdgeInsets.fromLTRB(30, 18, 0, 0),
+                alignment: Alignment.centerLeft,
+                child: Text((Data.account.balance as double).toStringAsFixed(2) + " €",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: (Data.account.balance as double) > 0 ? Colors.green : Colors.red),),
+              )
+            ],
           ),
-          Expanded(flex: 25,
-            child:Container(
+          Expanded(
+            child: Container(
               padding: EdgeInsets.only(top: 20),
               child: ListView(
                 padding: const EdgeInsets.only(left:20),
