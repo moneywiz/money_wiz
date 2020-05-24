@@ -7,6 +7,10 @@ import 'package:moneywiz/src/transaction.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:convert';
 
+import 'package:moneywiz/view/add_category_view.dart';
+
+
+
 class UpdateCategories extends StatefulWidget{
   @override
   State<StatefulWidget> createState() => _UpdateCategories();
@@ -45,13 +49,7 @@ class _UpdateCategories extends State<StatefulWidget> {
                         child: RaisedButton(
                           color: Colors.white,
                           onPressed: () {
-                            createCategoriesNewPopUp(context).then((onValue){
-                              if (onValue != null && onValue != ""){
-                                setState(() {
-                                  //temp_categories.add(new Category(onValue));
-                                });
-                              }
-                            });
+                            Navigator.of(context).push( MaterialPageRoute(builder: (context) => AddCategoryView()));
                           },
                           child: Text("Add", style: TextStyle(fontWeight: FontWeight.bold),),
                           ),
