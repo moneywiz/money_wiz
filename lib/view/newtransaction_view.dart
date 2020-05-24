@@ -6,26 +6,50 @@ import 'package:flutter/cupertino.dart';
 
 
 class NewTransaction extends StatefulWidget{
+  final Day day;
+
+  NewTransaction(this.day);
+
   @override
-  State<StatefulWidget> createState() => _NewTransactionState();
+  State<StatefulWidget> createState() => _NewTransactionState(day);
 }
 
 class _NewTransactionState extends State<NewTransaction> {
 
-
-  //maybe
-  //variavel para mostrar o dia da semana
   Day day;
-  //variavel para mostrar as horas da transação
+  Transaction tr;
 
   bool gain;
   DateTime formDateTime;
   String dropdownValue;
 
+  TextEditingController _valueController;
+  bool _validValue;
 
-  _NewTransactionState(){
-    this.day=Day(Month(2020,5),20);
+  _NewTransactionState(this.day){
     this.gain = false;
+    tr=Transaction(day,0,"Test",false);
+    _valueController=TextEditingController();
+    _validValue=true;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _valueController.addListener(() {
+      var lastValid=_validValue;
+      if (double.tryParse(_valueController.text)==null) _validValue=false;
+      else _validValue=true;
+      if (lastValid!=_validValue) setState(() {
+        _validValue=_validValue;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _valueController.dispose();
+    super.dispose();
   }
 
   @override
@@ -34,47 +58,47 @@ class _NewTransactionState extends State<NewTransaction> {
       appBar: AppBar(
         title: Text("New Transaction"),
       ),
+      resizeToAvoidBottomPadding: false,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Text("Teste Wednesday 20th May 2020"),
           Text("Transaction's Time"),
-          Container(
-            height: 200,
-            child: CupertinoDatePicker(
-              mode: CupertinoDatePickerMode.date,
-              initialDateTime: DateTime(2020, 5, 20),
-              onDateTimeChanged: (DateTime newDateTime) {
-                setState(() {
-                  this.formDateTime = newDateTime;
-                });
-              },
-            ),
+          RaisedButton(
+            child: Text("${tr.time.hour}:${tr.time.minute}"),
+            onPressed: () async {
+              TimeOfDay t=await showTimePicker(context: context, initialTime: TimeOfDay.now());
+              setState(() {
+                tr.time??=t;
+              });
+            },
           ),
           Text("Value"),
           Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                SizedBox(
-                  width: 300,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Value',
-                    ),
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              SizedBox(
+                width: 300,
+                child: TextField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Value',
+                    errorText: _validValue?"":"Must be a number"
                   ),
+                  controller: _valueController,
                 ),
-                RaisedButton(
-                  onPressed: () {
-                    setState(() {
-                      this.gain = ! this.gain;
-                    });
-                  },
-                  color: this.gain ? Colors.green : Colors.red,
-                  child: Text("€"),
-                ),
-              ],
+              ),
+              RaisedButton(
+                onPressed: () {
+                  setState(() {
+                    this.gain = ! this.gain;
+                  });
+                },
+                color: this.gain ? Colors.green : Colors.red,
+                child: Text("€"),
+              ),
+            ],
           ),
           Text("Description"),
           TextField(
@@ -114,7 +138,11 @@ class _NewTransactionState extends State<NewTransaction> {
           RaisedButton(
             color: Colors.lightBlue,
             onPressed: () {
-              print("horas: $formDateTime, ganho: $gain, categoria: $dropdownValue");
+              if (_validValue && _valueController.text!="") {
+                tr.value = double.tryParse(_valueController.text);
+                day.addTransaction(tr);
+                Navigator.of(context).pop();
+              }
             },
             child: Text("Confirm"),
           ),

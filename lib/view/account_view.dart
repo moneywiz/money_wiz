@@ -109,7 +109,7 @@ class AccountViewState extends State<StatefulWidget> {
                     subtitle: Text("See all your transactions"),
                     leading: Icon(Icons.calendar_today, color: Colors.blue),
                     onTap: (){
-                      Navigator.of(context).push( MaterialPageRoute(builder: (context) => DayView(Day(Month(2020, 6), 10))));
+                      Navigator.of(context).push( MaterialPageRoute(builder: (context) => DayView(Data.months[5].days[9])));
                     },
                   ),
                   const Divider(
