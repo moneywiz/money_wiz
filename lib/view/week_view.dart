@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:moneywiz/src/day.dart';
 import 'package:moneywiz/src/week.dart';
 import 'package:intl/intl.dart';
+import 'package:moneywiz/view/day_view.dart';
 
 class WeekView extends StatefulWidget {
   final Week week;
@@ -60,6 +61,9 @@ class _WeekViewState extends State<WeekView> {
               itemCount: 7,
               itemBuilder: (BuildContext context, int index) {
                 return Card(child: ListTile(
+                  onTap: () {
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => DayView(week.days[index])));
+                  },
                   title: Text("${week.days[index].weekDayString}"),
                   subtitle: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -68,18 +72,18 @@ class _WeekViewState extends State<WeekView> {
                       Column(
                         children: <Widget>[
                           Text(
-                              "+${format.format(week.days[index].positive)}€",
-                              style: TextStyle(
-                                color: Colors.green,
-                                fontSize: 10,
-                              )
+                            "+${format.format(week.days[index].positive)}€",
+                            style: TextStyle(
+                              color: Colors.green,
+                              fontSize: 10,
+                            )
                           ),
                           Text(
-                              "-${format.format(week.days[index].negative.abs())}€",
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontSize: 10,
-                              )
+                            "-${format.format(week.days[index].negative.abs())}€",
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 10,
+                            )
                           ),
                         ],
                       ),

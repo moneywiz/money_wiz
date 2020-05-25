@@ -95,7 +95,7 @@ class _MonthViewState extends State<MonthView> {
                       bool isThisMonthDay,
                       DateTime day,
                     ) {
-                      if (isThisMonthDay) {
+                      if (day.month==month.month && isThisMonthDay) {
                         double balance=month.days[day.day-1].balance;
                         Color border=Colors.transparent;
                         if (balance<0) border=Colors.red;

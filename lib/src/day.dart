@@ -2,6 +2,7 @@ import 'package:moneywiz/src/category.dart';
 import 'package:moneywiz/src/month.dart';
 import 'package:moneywiz/src/transaction.dart';
 import 'package:moneywiz/src/data.dart';
+import 'package:moneywiz/src/week.dart';
 
 class Day {
 
@@ -94,6 +95,23 @@ class Day {
     if (total==0) return null;
     if (pos) return ((_positive)/total);
     return ((_negative.abs())/total);
+  }
+
+  Week getWeek() {
+    List<Day> days=List();
+
+    DateTime first=DateTime(month.year,month.month,day);
+    while (first.weekday>1) {
+      first=first.subtract(Duration(days: 1));
+    }
+
+    for (var d=0;d<7;d++) {
+      days.add(Data.months[first.month-1].days[first.day-1]);
+      first=first.add(Duration(days: 1));
+    }
+
+    return Week(days);
+
   }
 
 }

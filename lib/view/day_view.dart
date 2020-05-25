@@ -3,7 +3,9 @@ import 'package:moneywiz/src/data.dart';
 import 'package:moneywiz/src/day.dart';
 import 'package:moneywiz/src/month.dart';
 import 'package:moneywiz/src/transaction.dart';
+import 'package:moneywiz/view/month_view.dart';
 import 'package:moneywiz/view/newtransaction_view.dart';
+import 'package:moneywiz/view/week_view.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_calendar_carousel/src/calendar_header.dart';
@@ -32,11 +34,14 @@ class _DayViewState extends State<DayView> {
         title: Text("${day.month.year} ${day.month.monthString} ${day.day}, ${day.weekDayString}"),
         centerTitle: true,
       ),
-      body: Container(
-          child:
-            _balanceWidget(),
-            //_transactionsWidget(),
-          //],
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          _getViewSelector(),
+          Flexible(child: Container(
+            child: _balanceWidget(),
+          )),
+        ]
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -47,6 +52,25 @@ class _DayViewState extends State<DayView> {
         child: Icon(Icons.add),
         backgroundColor: Colors.blue,
       ),
+    );
+  }
+
+  Widget _getViewSelector() {
+    return Row(
+      children: <Widget>[
+        RaisedButton(
+          child: Text("Month"),
+          onPressed: () {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MonthView(day.month)));
+          },
+        ),
+        RaisedButton(
+          child: Text("Week"),
+          onPressed: () {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => WeekView(day.getWeek())));
+          },
+        ),
+      ],
     );
   }
 
