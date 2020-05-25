@@ -67,13 +67,6 @@ class _AddCategoryView extends State<StatefulWidget> {
               scrollDirection: Axis.vertical,
               shrinkWrap: true,
               children: <Widget>[
-                const Divider(
-                  color: Colors.black12,
-                  height: 20,
-                  thickness: 1,
-                  indent: 1,
-                  endIndent: 10,
-                ),
                 ListTile(
                   title: Text("Category Name"),
                   subtitle: name == "" ? Text("Not Selected") : Text("$name", style: TextStyle(color: Colors.blue),),
@@ -171,6 +164,13 @@ class _AddCategoryView extends State<StatefulWidget> {
                       ),
                     ],
                   ),
+                ),
+                const Divider(
+                  color: Colors.black12,
+                  height: 20,
+                  thickness: 1,
+                  indent: 1,
+                  endIndent: 10,
                 ),
               ],
             ),

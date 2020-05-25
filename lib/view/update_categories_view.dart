@@ -45,28 +45,28 @@ class _MainCategories extends State<StatefulWidget> {
         Column(
           children: <Widget>[
             Expanded(
-              child: TabBarView(
-                children: [
-                  ListView(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    children: <Widget>[
-                      for (int i = 0; i<Data.expenseCategories.length; i++)
-                        MyTile(i, Data.expenseCategories, changeName, removeName),
+                child: TabBarView(
+                    children: [
+                      ListView(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        children: <Widget>[
+                          for (int i = 0; i<Data.expenseCategories.length; i++)
+                            MyTile(i, Data.expenseCategories, changeName, removeName),
 
-                    ],
-                  ),
-                  ListView(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    children: <Widget>[
-                      for (int i = 0; i<Data.incomeCategories.length; i++)
-                        MyTile(i, Data.incomeCategories, changeName, removeName),
+                        ],
+                      ),
+                      ListView(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        children: <Widget>[
+                          for (int i = 0; i<Data.incomeCategories.length; i++)
+                            MyTile(i, Data.incomeCategories, changeName, removeName),
 
-                    ],
-                  ),
-                ]
-              )
+                        ],
+                      ),
+                    ]
+                ),
             ),
           ],
         ),
@@ -89,18 +89,18 @@ class _MainCategories extends State<StatefulWidget> {
     return new_list;
   }*/
 
-  changeName(String name, int id){
+  changeName(String name, int id, List<Category> categories){
     setState(() {
-      Data.expenseCategories[id].name = name;
+      categories[id].name = name;
     });
   }
 
-  removeName(int id){
+  removeName(int id, List<Category> categories){
     setState(() {
       for(int i = 0; i<Data.accounts.length; i++){
-        Data.accounts[i].budgets.remove(Data.expenseCategories[id]);
+        Data.accounts[i].budgets.remove(categories[id]);
       }
-      print(Data.expenseCategories.removeAt(id));
+      categories.removeAt(id);
     });
   }
 
@@ -140,8 +140,8 @@ class MyTile extends StatelessWidget{
   Category category;
   String name;
 
-  Function(String new_name, int id) changeName;
-  Function(int id) removeName;
+  Function(String new_name, int id, List<Category> categories) changeName;
+  Function(int id, List<Category> categories) removeName;
 
   @override
   MyTile(this.id, this.categories, this.changeName, this.removeName){
@@ -172,20 +172,19 @@ class MyTile extends StatelessWidget{
           color: Colors.white,
         ),
       ),
-      onDismissed: (direction){
-        createCategoriesRemovePopUp(context, name).then((onValue){
+      confirmDismiss: (direction) async {
+        return await createCategoriesRemovePopUp(context, name).then((onValue){
           if(onValue == true){
-            removeName(id);
+            removeName(id, categories);
+            return true;
           }
-          else{
-            changeName(categories[0].name, 0);
-          }
+          return false;
         });
       },
       child: ListTile(
         onTap: (){
           Navigator.of(context).push( MaterialPageRoute(builder: (context) => (AddCategoryView(false, id)))).then((onValue){
-            changeName(categories[0].name, 0);
+            changeName(categories[0].name, 0, categories);
           });
         },
         leading: Icon(category.icon, color: Colors.black,),
