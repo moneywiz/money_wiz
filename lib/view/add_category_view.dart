@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:moneywiz/src/category.dart';
-import 'package:moneywiz/src/day.dart';
 import 'package:moneywiz/src/data.dart';
-import 'package:moneywiz/src/month.dart';
-import 'package:moneywiz/src/transaction.dart';
-import 'package:flutter/cupertino.dart';
-import 'dart:convert';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 
@@ -92,10 +87,10 @@ class _AddCategoryView extends State<StatefulWidget> {
                 ),
 
 
-                categories == Data.expenseCategories ?
+                categories == Data.expenseCategories && Data.account != Data.allAccounts ?
                 ListTile(
                   title: Text("Max Monthly Limit"),
-                  subtitle: limit == "null" ? Text("Non-Limit") : Text("$limit €", style: TextStyle(color: Colors.blue),),
+                  subtitle: limit == "null" ? Text("No Limit") : Text("$limit €", style: TextStyle(color: Colors.blue),),
                   onTap: (){
                     limitNewPopUp(context).then((onValue){
                       if (onValue != null) {
@@ -112,7 +107,7 @@ class _AddCategoryView extends State<StatefulWidget> {
                   child:
                   ListTile(
                     title: Text("Max Monthly Limit", style: TextStyle(color: Colors.black26),),
-                    subtitle: limit == "null" ? Text("Non-Limit") : Text("$limit €", style: TextStyle(color: Colors.blue),),
+                    subtitle: limit == "null" ? Text("No Limit") : Text("$limit €", style: TextStyle(color: Colors.blue),),
                     ),
                   ),
 

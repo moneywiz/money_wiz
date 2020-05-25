@@ -24,7 +24,10 @@ class Day {
     date=DateTime(month.year,month.month,day);
   }
 
-  addTransaction(Transaction t) {
+  addTransaction(Transaction t, {bool all=false}) {
+    if(!all){
+      Data.allAccounts.months[month.month - 1].days[day - 1].addTransaction(t, all: true);
+    }
     transactions.add(t);
     _positive += t.value > 0 ? t.value : 0;
     _negative += t.value < 0 ? t.value : 0;

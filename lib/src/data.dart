@@ -84,8 +84,6 @@ class Data {
                 ? expenseCategories
                 : incomeCategories;
             t.category=categories[random.nextInt(categories.length)];
-
-            allAccounts.months[i].days[j].addTransaction(t);
           }
         }
         a.months.add(month);
