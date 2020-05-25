@@ -32,35 +32,31 @@ class _DayViewState extends State<DayView> {
         title: Text("${day.month.year} ${day.month.monthString} ${day.day}, ${day.weekDayString}"),
         centerTitle: true,
       ),
-      body: DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          appBar: TabBar(
-            labelColor: Color(0xFF000000),
-            unselectedLabelColor: Color(0xFF000000),
-            tabs: <Widget>[
-              Tab(child: Text("Balance"),),
-              Tab(text: "Transactions"),
-            ],
-          ),
-          body: TabBarView(
-            children: <Widget>[
-              _balanceWidget(),
-              _transactionsWidget(),
-            ],
-          )
-        ),
-      )
+      body: Container(
+          child:
+            _balanceWidget(),
+            //_transactionsWidget(),
+          //],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => NewTransaction(day))).then((value) {
+            setState(() {});
+          });
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Colors.blue,
+      ),
     );
   }
 
   Widget _balanceWidget() {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         _getPosNegStats(),
-        Text("Total Balance", style: TextStyle(fontSize: 32)),
-        Text((day.balance>=0?"+":"")+"${format.format(day.balance)}€", style: TextStyle(fontSize: 80, color: (day.balance>=0?Colors.green:Colors.red))),
+        Text("Total Balance", style: TextStyle(fontSize: 26)),
+        Text((day.balance>=0?"+":"")+"${format.format(day.balance)}€", style: TextStyle(fontSize: 50, color: (day.balance>=0?Colors.green:Colors.red))),
         Padding(
             padding: EdgeInsets.fromLTRB(100, 0, 100, 0),
             child: CalendarHeader(
@@ -80,6 +76,16 @@ class _DayViewState extends State<DayView> {
                 isTitleTouchable: false,
                 onHeaderTitlePressed: null
             )
+        ),
+        const Divider(
+          color: Colors.black12,
+          height: 20,
+          thickness: 1,
+          indent: 40,
+          endIndent: 40,
+        ),
+        Expanded(
+          child: _transactionsWidget()
         )
       ],
     );
@@ -88,21 +94,9 @@ class _DayViewState extends State<DayView> {
   Widget _transactionsWidget() {
     return Column(
       children: <Widget>[
-        Padding(
-          padding: EdgeInsets.all(32),
-          child: RaisedButton(
-            child: Text("Add new Transaction", style: TextStyle(fontSize: 24)),
-            color: Colors.blue,
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => NewTransaction(day))).then((value) {
-                setState(() {});
-              });
-            },
-          )
-        ),
         Expanded(
           child: Padding(
-            padding: EdgeInsets.all(16),
+            padding: EdgeInsets.fromLTRB(16, 5, 16, 16),
             child: SingleChildScrollView(
               child: Column(children: _getTransactions())
             )
@@ -168,18 +162,83 @@ class _DayViewState extends State<DayView> {
     List<Widget> lst=List();
     for (Transaction t in day.transactions) {
       lst.add(Card(
-        child: FlatButton(
-          child: Row(
-            children: <Widget>[
-              Text("${t.cause}: "),
-              Text((t.value>=0?"+":"")+"${format.format(t.value)}€", style: TextStyle(color: (t.value>=0?Colors.green:Colors.red)))
-            ],
+        child: Dismissible(
+          key: UniqueKey(),
+          background: Container(
+            alignment: Alignment.centerLeft,
+            padding: EdgeInsets.only(left: 20.0),
+            color: Colors.red,
+            child: Icon(
+              Icons.delete,
+              color: Colors.white,
+            ),
+          ),
+          secondaryBackground: Container(
+            alignment: Alignment.centerRight,
+            padding: EdgeInsets.only(right: 20.0),
+            color: Colors.red,
+            child: Icon(
+              Icons.delete,
+              color: Colors.white,
+            ),
+          ),
+          confirmDismiss: (direction) async {
+            return await RemovePopUp(context).then((onValue){
+              if(onValue == true){
+                day.removeTransaction(t);
+                setState(() {});
+                return true;
+              }
+              return false;
+
+            });
+          },
+          child:
+          FlatButton(
+          child:
+            Container(
+              padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+              child: Row(
+                children: <Widget>[
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: <Widget>[
+                            Text("${t.cause}", style: TextStyle(fontSize: 14,))
+                          ],
+                        ),
+                        Container(
+                            padding: EdgeInsets.only(top: 12),
+                            child: Row(
+                              children: <Widget>[
+                                Icon(Icons.access_time, size: 16),
+                                Text(" ${t.time.hour.toString().padLeft(2, '0')}:${t.time.minute.toString().padLeft(2, '0')}   |   ", style: TextStyle(fontSize: 13,)),
+                                Icon(t.category.icon, size: 21),
+                                Text("  ${t.category.name}", style: TextStyle(fontSize: 13,))
+                              ],
+                            )
+                        )
+                      ]
+                  ),
+                  Column(
+                    children: <Widget>[
+                      Container(
+                        alignment: Alignment.centerRight,
+                        child: Text((t.value>=0?"+":"")+"${format.format(t.value)}€", style: TextStyle(fontSize: 16, color: (t.value>=0?Colors.green:Colors.red))),
+                      )
+                    ],
+                  )
+                ],
+                mainAxisAlignment: MainAxisAlignment.spaceBetween
+              )
           ),
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) => NewTransaction(day,t))).then((value) {
               setState(() {});
             });
           },
+        ),
         ),
       ));
     }
@@ -210,5 +269,30 @@ class _DayViewState extends State<DayView> {
       day=next;
     });
 
+  }
+
+  Future<bool> RemovePopUp(BuildContext context){
+
+    return showDialog(context: context, builder: (context){
+      return AlertDialog(
+          title: Text("Remove Selected Transaction?", style: TextStyle(fontSize: 18),),
+          actions: <Widget>[
+            MaterialButton(
+              elevation: 5.0,
+              child: Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            MaterialButton(
+              elevation: 5.0,
+              child: Text("Remove", style: TextStyle(color: Colors.red),),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ]
+      );
+    });
   }
 }

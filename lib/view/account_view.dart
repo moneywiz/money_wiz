@@ -91,7 +91,7 @@ class AccountViewState extends State<StatefulWidget> {
           ),
           Expanded(
             child: Container(
-              padding: EdgeInsets.only(top: 20),
+              padding: EdgeInsets.only(top: 40),
               child: ListView(
                 padding: const EdgeInsets.only(left:20),
                 scrollDirection: Axis.vertical,
@@ -154,7 +154,7 @@ class AccountViewState extends State<StatefulWidget> {
                     subtitle: Text("create categories to organize your data"),
                     leading: Icon(Icons.loyalty, color: Colors.blue),
                     onTap: (){
-                      Navigator.of(context).push( MaterialPageRoute(builder: (context) => (UpdateCategories())));
+                      Navigator.of(context).push( MaterialPageRoute(builder: (context) => (MainCategories())));
                     },
                   ),
                 ],

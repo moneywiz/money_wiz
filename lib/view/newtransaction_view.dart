@@ -19,6 +19,8 @@ class NewTransaction extends StatefulWidget{
 
 class _NewTransactionState extends State<NewTransaction> {
 
+  GlobalKey scaffold = new GlobalKey();
+
   Day day;
   Transaction tr;
   bool isNew;
@@ -46,7 +48,7 @@ class _NewTransactionState extends State<NewTransaction> {
     else {
       isNew=false;
       gain=tr.value>=0;
-      _valueController.text="${tr.value}";
+      _valueController.text="${tr.value.abs()}";
       _causeController.text=tr.cause;
       _descrController.text=tr.description;
       dropdownValue=tr.category.name;
@@ -77,8 +79,9 @@ class _NewTransactionState extends State<NewTransaction> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffold,
       appBar: AppBar(
-        title: Text("New Transaction"),
+        title: Text(isNew ? "New Transaction" : "Transaction"),
       ),
       resizeToAvoidBottomPadding: false,
       body: Column(
@@ -87,7 +90,7 @@ class _NewTransactionState extends State<NewTransaction> {
         children: <Widget>[
           Text("Transaction's Time"),
           RaisedButton(
-            child: Text("${tr.time.hour}:${tr.time.minute}", style: TextStyle(fontSize: 32)),
+            child: Text("${tr.time.hour.toString().padLeft(2, '0')}:${tr.time.minute.toString().padLeft(2, '0')}", style: TextStyle(fontSize: 32)),
             onPressed: () async {
               TimeOfDay t=await showTimePicker(context: context, initialTime: TimeOfDay.now());
               setState(() {
@@ -163,24 +166,27 @@ class _NewTransactionState extends State<NewTransaction> {
             },
             items: _getDropdown(),
           ),
-
-          RaisedButton(
-            color: Colors.lightBlue,
-            onPressed: () {
-              if (_validValue && _valueController.text!="") {
-                tr.value = double.tryParse(_valueController.text);
-                if (!gain) tr.value*=-1;
-
-                tr.description=_descrController.text;
-                tr.cause=_causeController.text;
-
-                if (isNew) day.addTransaction(tr);
-                Navigator.of(context).pop();
-              }
-            },
-            child: Text("Confirm"),
-          ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          if (_validValue && _valueController.text!="") {
+            tr.value = double.tryParse(_valueController.text);
+            if (!gain) tr.value*=-1;
+
+            tr.description=_descrController.text;
+            tr.cause=_causeController.text;
+
+            if (isNew) day.addTransaction(tr);
+            Navigator.of(context).pop();
+          }
+          else {
+            (scaffold.currentState as ScaffoldState).showSnackBar(
+                SnackBar(content: Text('All fields must be filled!')));
+          }
+        },
+        child: Icon(Icons.check),
+        backgroundColor: Colors.green,
       ),
     );
   }

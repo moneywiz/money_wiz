@@ -29,10 +29,16 @@ class Day {
     _negative += t.value < 0 ? t.value : 0;
   }
 
+  removeTransaction(Transaction t) {
+    transactions.remove(t);
+    _positive -= t.value > 0 ? t.value : 0;
+    _negative -= t.value < 0 ? t.value : 0;
+  }
+
   get expenseCategoryBalance {
     Map<Category, double> map = Map();
     for (var t in transactions) {
-      map[t.category] = map.containsKey(t.category) ? map[t.category] + t.value.abs(): t.value.abs();
+      if(Data.expenseCategories.contains(t.category)) map[t.category] = map.containsKey(t.category) ? map[t.category] + t.value.abs(): t.value.abs();
     }
     return map;
   }
@@ -40,7 +46,7 @@ class Day {
   get incomeCategoryBalance {
     Map<Category, double> map = Map();
     for (var t in transactions) {
-      map[t.category] = map.containsKey(t.category) ? map[t.category] + t.value.abs(): t.value.abs();
+      if(Data.incomeCategories.contains(t.category)) map[t.category] = map.containsKey(t.category) ? map[t.category] + t.value.abs(): t.value.abs();
     }
     return map;
   }

@@ -92,72 +92,104 @@ class _Limit extends State<Limit> {
       double percent = available >= 0 ? (spent / budget) : 1;
       res.addAll(
         <Widget>[
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: (){
-              updateBudgetPopUp(context, e.key, e.value).then((onValue){
-                  setState(() {});
+          Dismissible(
+            key: UniqueKey(),
+            background: Container(
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.only(left: 20.0),
+              color: Colors.red,
+              child: Icon(
+                Icons.delete,
+                color: Colors.white,
+              ),
+            ),
+            secondaryBackground: Container(
+              alignment: Alignment.centerRight,
+              padding: EdgeInsets.only(right: 20.0),
+              color: Colors.red,
+              child: Icon(
+                Icons.delete,
+                color: Colors.white,
+              ),
+            ),
+            confirmDismiss: (direction) async {
+              return await RemovePopUp(context, e.key.name).then((onValue){
+                if(onValue == true){
+                  Data.account.budgets.remove(e.key);
+                  return true;
+                }
+                return false;
+
               });
             },
-            child: Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 30.0),
-                  child:
-                    Row(children: <Widget>[
-                        Text("Category: " ,style: TextStyle(fontSize: 14),),
-                        Text(e.key.name ,style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
-                      ]
+            child:
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: (){
+                  updateBudgetPopUp(context, e.key, e.value).then((onValue){
+                      setState(() {});
+                  });
+                },
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(30,2,0,0),
+                      child:
+                        Row(children: <Widget>[
+                            Text("Category: " ,style: TextStyle(fontSize: 14),),
+                            Text(e.key.name ,style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
+                          ]
+                        ),
                     ),
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(30.0, 5, 0, 0),
-                  child:
-                    Row(children: <Widget>[
-                      Row(
-                        children: [
-                          Text("Budget: " ,style: TextStyle(fontSize: 14),),
-                          Text(budget.toStringAsFixed(2) + "€" ,style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)
-                        ]
-                      ),
-                      Container(
-                        padding: EdgeInsets.only(right: 30),
-                        alignment: Alignment.centerRight,
-                        child: Icon(
-                          e.key.icon
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(30.0, 5, 0, 0),
+                      child:
+                        Row(children: <Widget>[
+                          Row(
+                            children: [
+                              Text("Budget: " ,style: TextStyle(fontSize: 14),),
+                              Text(budget.toStringAsFixed(2) + "€" ,style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)
+                            ]
+                          ),
+                          Container(
+                            padding: EdgeInsets.only(right: 30),
+                            alignment: Alignment.centerRight,
+                            child: Icon(
+                              e.key.icon
+                            )
+                          )
+                          ],
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(30.0, 5, 0, 0),
+                      child:
+                        Row(children: <Widget>[
+                            Text("Available: " ,style: TextStyle(fontSize: 14),),
+                            Text(available.toStringAsFixed(2) + "€" ,style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: percent == 1 ? Colors.red : (percent > 0.8 ? Colors.orange : Colors.green)),),
+                          ]
+                        ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(12,7,12,2),
+                      child:
+                        LinearPercentIndicator(
+                          percent: percent,
+                          lineHeight: 4,
+                          progressColor: percent == 1 ? Colors.red : (percent > 0.8 ? Colors.orange : Colors.green),
                         )
-                      )
-                      ],
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     ),
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(30.0, 5, 0, 0),
-                  child:
-                    Row(children: <Widget>[
-                        Text("Available: " ,style: TextStyle(fontSize: 14),),
-                        Text(available.toStringAsFixed(2) + "€" ,style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: percent == 1 ? Colors.red : (percent > 0.8 ? Colors.orange : Colors.green)),),
-                      ]
-                    ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 5),
-                  child:
-                    LinearPercentIndicator(
-                      percent: percent,
-                      lineHeight: 4,
-                      progressColor: percent == 1 ? Colors.red : (percent > 0.8 ? Colors.orange : Colors.green),
+                    const Divider(
+                      color: Colors.black12,
+                      height: 20,
+                      thickness: 1,
+                      indent: 20,
+                      endIndent: 20,
                     )
-                ),
-                const Divider(
-                  color: Colors.black12,
-                  height: 20,
-                  thickness: 1,
-                  indent: 20,
-                  endIndent: 10,
+                  ]
                 )
-              ]
-            )
+              )
           )
         ],
       );
@@ -215,10 +247,19 @@ class _Limit extends State<Limit> {
                     )
                   ]
                   ),
-                  TextField(
-                    controller: customController,
-                    keyboardType: TextInputType.number,
-                  ),
+                  Row(children: <Widget>[
+                    Text("Budget:  " ,style: TextStyle(fontSize: 14),),
+                    Flexible (
+                        child: Container(
+                            padding: EdgeInsets.fromLTRB(16, 0, 70, 0),
+                            child: TextField(
+                              controller: customController,
+                              keyboardType: TextInputType.number,
+                            )
+                        )
+                    )
+                  ]
+                  )
                 ],
               ),
               actions: <Widget>[
@@ -233,9 +274,21 @@ class _Limit extends State<Limit> {
                   elevation: 5.0,
                   child: Text("Submit", style: TextStyle(fontWeight: FontWeight.bold)),
                   onPressed: () {
+                    if(category == null) {
+                      (scaffold.currentState as ScaffoldState).showSnackBar(
+                          SnackBar(content: Text('Category must be specified!')));
+                      Navigator.of(context).pop();
+                      return;
+                    }
+                    if(customController.value.text == "") {
+                      (scaffold.currentState as ScaffoldState).showSnackBar(
+                          SnackBar(content: Text('Budget value must be filled!')));
+                      Navigator.of(context).pop();
+                      return;
+                    }
                     double newValue = double.tryParse(customController.value.text);
                     if(newValue > 0) Data.account.budgets[category] = newValue;
-                    else (scaffold.currentState as ScaffoldState).showSnackBar(SnackBar(content: Text('Negative budget values are not allowed!')));
+                    else (scaffold.currentState as ScaffoldState).showSnackBar(SnackBar(content: Text('Only positive budget values are allowed!')));
                     Navigator.of(context).pop();
                   },
                 ),
@@ -260,23 +313,36 @@ class _Limit extends State<Limit> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Row(children: <Widget>[
-                Text("Category: " ,style: TextStyle(fontSize: 14),),
-                Text(category.name ,style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
-              ]
+                  Text("Category:  " ,style: TextStyle(fontSize: 14),),
+                  Text(category.name ,style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
+                ]
               ),
-              TextField(
-                controller: customController,
-                keyboardType: TextInputType.number,
-              ),
+              Row(children: <Widget>[
+                  Text("Budget:  " ,style: TextStyle(fontSize: 14),),
+                  Flexible (
+                    child: Container(
+                        padding: EdgeInsets.fromLTRB(12, 0, 70, 0),
+                        child: TextField(
+                          controller: customController,
+                          keyboardType: TextInputType.number
+                        )
+                    )
+                  )
+                ]
+              )
             ],
           ),
           actions: <Widget>[
             MaterialButton(
               elevation: 5.0,
-              child: Text("Delete", style: TextStyle(color: Colors.red),),
+              child: Text("Remove", style: TextStyle(color: Colors.red),),
               onPressed: () {
-                Data.account.budgets.remove(category);
-                Navigator.of(context).pop();
+                RemovePopUp(context, category.name).then((onValue){
+                  if(onValue == true){
+                    Data.account.budgets.remove(category);
+                  }
+                  Navigator.of(context).pop();
+                });
               },
             ),
             MaterialButton(
@@ -290,10 +356,41 @@ class _Limit extends State<Limit> {
               elevation: 5.0,
               child: Text("Submit", style: TextStyle(fontWeight: FontWeight.bold)),
               onPressed: () {
+                if(customController.value.text == "") {
+                  (scaffold.currentState as ScaffoldState).showSnackBar(
+                      SnackBar(content: Text('Budget value must be filled!')));
+                  Navigator.of(context).pop();
+                  return;
+                }
                 double newValue = double.tryParse(customController.value.text);
                 if(newValue > 0) Data.account.budgets[category] = newValue;
                 else (scaffold.currentState as ScaffoldState).showSnackBar(SnackBar(content: Text('Negative budget values are not allowed!')));
                 Navigator.of(context).pop();
+              },
+            ),
+          ]
+      );
+    });
+  }
+
+  Future<bool> RemovePopUp(BuildContext context, String name){
+
+    return showDialog(context: context, builder: (context){
+      return AlertDialog(
+          title: Text("Remove Budget for Category ${name}?", style: TextStyle(fontSize: 17),),
+          actions: <Widget>[
+            MaterialButton(
+              elevation: 5.0,
+              child: Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            MaterialButton(
+              elevation: 5.0,
+              child: Text("Remove", style: TextStyle(color: Colors.red),),
+              onPressed: () {
+                Navigator.of(context).pop(true);
               },
             ),
           ]
