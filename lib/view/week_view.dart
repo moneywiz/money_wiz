@@ -56,7 +56,7 @@ class _WeekViewState extends State<WeekView> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text("${week.days[index].weekDayString}", style: TextStyle(fontSize: 30, color: today?Colors.white:Colors.black54)),
-                          Text("${week.days[index].month.month} ${week.days[index].day}", style: TextStyle(fontSize: 20, color: today?Colors.white:Colors.black38))
+                          Text("${week.days[index].month.monthString} ${week.days[index].day}", style: TextStyle(fontSize: 20, color: today?Colors.white:Colors.black38))
                         ],
                       ),
                       Container(

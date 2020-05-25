@@ -96,6 +96,13 @@ class Month {
     return months[month-1];
   }
 
+  double getPercent([bool pos=true]) {
+    var total=positive+negative.abs();
+    if (total==0) return null;
+    if (pos) return ((positive)/total);
+    return ((negative.abs())/total);
+  }
+
   static int nDays(int month, int year) {
     DateTime date=DateTime(year,month);
     return ((date.month < 12)?DateTime(date.year, date.month + 1, 0):DateTime(date.year + 1, 1, 0)).day;

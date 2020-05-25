@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:moneywiz/src/week.dart';
 import 'package:moneywiz/view/day_view.dart';
 import 'package:moneywiz/view/week_view.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class MonthView extends StatefulWidget {
   final Month month;
@@ -22,69 +23,52 @@ class _MonthViewState extends State<MonthView> {
   static NumberFormat format=NumberFormat("#,##0.00");
 
   Month month;
+  DateTime selDate;
 
-  _MonthViewState(this.month);
+  _MonthViewState(this.month) {
+    selDate=DateTime(month.year,month.month);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("${month.year} ${month.monthString}"),
+        title: Text(month!=null?"${month.year} ${month.monthString}":"Unavailable Month"),
         centerTitle: true,
       ),
-      body: Column(
+      body: SingleChildScrollView(child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text("Total Balance",style: TextStyle(fontSize: 24)),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text((month.balance>=0?"+":"")+"${format.format(month.balance)}€", style: TextStyle(fontSize: 40, color: (month.balance>=0?Colors.green:Colors.red))),
-              Column(
-                children: <Widget>[
-                  Text(
-                    "+${format.format(month.positive)}€",
-                    style: TextStyle(
-                      color: Colors.green,
-                      fontSize: 20,
-                    )
-                  ),
-                  Text(
-                    "-${format.format(month.negative.abs())}€",
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontSize: 20,
-                    )
-                  ),
-                ],
-              ),
-            ],
-          ),
+          month!=null?_getPosNegStats():null,
+          Padding(padding: EdgeInsets.symmetric(horizontal: 16),child: Text(month!=null?"Total Balance":"This month is out of bounds for the prototype",style: TextStyle(fontSize: 24),textAlign: TextAlign.center)),
+          month!=null?Text((month.balance>=0?"+":"")+"${format.format(month.balance)}€", style: TextStyle(fontSize: 50, color: (month.balance>=0?Colors.green:Colors.red))):null,
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget> [
-                Column(
+                month!=null?Padding(padding: EdgeInsets.only(top: 96), child:Column(
                   children: _getWeekButtons(),
-                ),
+                )):null,
                 Expanded(
                   child: CalendarCarousel(
                     firstDayOfWeek: 1,
                     weekendTextStyle: TextStyle(color: Colors.red),
                     thisMonthDayBorderColor: Colors.grey,
-                    height: 520,
-                    selectedDateTime: DateTime(month.year,month.month),
+                    height: 400,
+                    selectedDateTime: selDate,
                     selectedDayButtonColor: Colors.transparent,
                     selectedDayTextStyle: TextStyle(fontSize: 14, color: Colors.black),
                     onCalendarChanged: (DateTime dt) {
                       setState(() {
-                        month=Data.months[dt.month-1];
+                        month=(dt.month-1>=0 && dt.month-1<=5)?Data.months[dt.month-1]:null;
+                        selDate=month!=null?DateTime(month.year,month.month):dt;
                       });
                     },
-                    onDayPressed: (DateTime dt, List lst) {
+                    onDayPressed: month!=null?(DateTime dt, List lst) {
                       Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => DayView(month.days[dt.day-1])));
-                    },
-                    customDayBuilder: (
+                    }:null,
+                    customDayBuilder: month!=null?(
                       bool isSelectable,
                       int index,
                       bool isSelectedDay,
@@ -114,14 +98,62 @@ class _MonthViewState extends State<MonthView> {
                         );
                       }
                       return null;
-                    },
+                    }:null,
                   )
                 )
-              ]
+              ].where((element) => element!=null).toList(),
             )
           )
-        ],
+        ].where((element) => element!=null).toList(),
       )
+    ));
+  }
+
+  Widget _getPosNegStats() {
+    return Padding(
+        padding: EdgeInsets.fromLTRB(10, 20, 10, 10),
+        child: Row(
+          children: <Widget>[
+            Column(
+              children: <Widget>[
+                Text(
+                    "+${format.format(month.positive)}€",
+                    style: TextStyle(
+                      color: Colors.green,
+                      fontSize: 20,
+                    )
+                ),
+                Text(
+                    "-${format.format(month.negative.abs())}€",
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 20,
+                    )
+                ),
+              ],
+            ),
+            VerticalDivider(),
+            Expanded(child: Column(
+              children: <Widget>[
+                LinearPercentIndicator(
+                  percent: month.getPercent()??0,
+                  lineHeight: 8,
+                  progressColor: Colors.green,
+                  animateFromLastPercent: true,
+                  animationDuration: 500,
+                ),
+                Padding(padding: EdgeInsets.symmetric(vertical: 8)),
+                LinearPercentIndicator(
+                  percent: month.getPercent(false)??0,
+                  lineHeight: 8,
+                  progressColor: Colors.red,
+                  animateFromLastPercent: true,
+                  animationDuration: 500,
+                )
+              ],
+            )
+            )],
+        )
     );
   }
 
@@ -152,7 +184,6 @@ class _MonthViewState extends State<MonthView> {
       firstDay=firstDay.add(Duration(days: 1));
     }
 
-    days.forEach((element) {print("${element.month.month} ${element.day} ${element.weekDayString}");});
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => WeekView(Week(days))));
   }
 
