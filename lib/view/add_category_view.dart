@@ -291,6 +291,7 @@ class _AddCategoryView extends State<StatefulWidget> {
           title: Text("Category Limit"),
           content: TextField(
             controller: customController,
+            keyboardType: TextInputType.number,
           ),
           actions: <Widget>[
             MaterialButton(
