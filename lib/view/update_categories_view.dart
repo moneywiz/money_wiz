@@ -19,36 +19,31 @@ class MainCategories extends StatefulWidget{
 
 class _MainCategories extends State<StatefulWidget> {
 
-
+//Navigator.of(context).push( MaterialPageRoute(builder: (context) => AddCategoryView(true, 0))).then((onValue){
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Settings"),
+        title: Text("Categories"),
       ),
       body:
       Column(
         children: <Widget>[
-          Container(
-            color: Colors.blue,
-            child:
-            Row(
+          DefaultTabController(
+            length: 2,
+            child: Column(
               children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(left: 15.0),
-                  child: Text("Categories", style: TextStyle(fontSize: 17, color: Colors.white),),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 220.0),
-                  child: RaisedButton(
-                    color: Colors.white,
-                    onPressed: () {
-                      Navigator.of(context).push( MaterialPageRoute(builder: (context) => AddCategoryView(true, 0))).then((onValue){
-                        setState(() {});
-                      });
-                    },
-                    child: Text("Add", style: TextStyle(fontWeight: FontWeight.bold),),
-                  ),
+                TabBar(
+                  labelColor: Color(0xFF000000),
+                  unselectedLabelColor: Color(0xFF000000),
+                  tabs: <Widget>[
+                    Tab(
+                      text: "Expenses"
+                    ),
+                    Tab(
+                      text: "Income"
+                    ),
+                  ],
                 ),
               ],
             ),

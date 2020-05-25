@@ -97,7 +97,7 @@ class _AddCategoryView extends State<StatefulWidget> {
                 ),
                 ListTile(
                   title: Text("Max Monthly Limit"),
-                  subtitle: limit == "" ? Text("Non-Limit") : Text("$limit €", style: TextStyle(color: Colors.blue),),
+                  subtitle: limit == "null" ? Text("Non-Limit") : Text("$limit €", style: TextStyle(color: Colors.blue),),
                   onTap: (){
                     limitNewPopUp(context).then((onValue){
                       if (onValue != null) {
@@ -181,16 +181,19 @@ class _AddCategoryView extends State<StatefulWidget> {
               child: Padding(
                 padding: EdgeInsets.only(right: 20.0),
                 child: RaisedButton(
-                  child:  isAddView ? Text("Create", style: TextStyle(fontSize: 14, color: Colors.white),) : Text("Create", style: TextStyle(fontSize: 14, color: Colors.white),),
+                  child:  isAddView ? Text("Create", style: TextStyle(fontSize: 14, color: Colors.white),) : Text("Submit", style: TextStyle(fontSize: 14, color: Colors.white),),
                   color: Colors.blue,
                   onPressed: (){
-                    Category c = new Category(name, pickerColor, _icon);
                     if(isAddView){
+                      Category c = new Category(name, pickerColor, _icon);
                       Data.expenseCategories.add(c);
                       Data.account.budgets[c] = double.parse(limit);
                     }
                     else{
-                      Data.expenseCategories[id] = c;
+                      Category c = Data.expenseCategories[id];
+                      c.name = name;
+                      c.color = pickerColor;
+                      c.icon = _icon;
                       Data.account.budgets[c] = double.parse(limit);
                     }
                     Navigator.of(context).pop();
