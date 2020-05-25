@@ -1,5 +1,4 @@
 import 'dart:ui';
-import 'dart:math' as math;
 import 'package:moneywiz/src/day.dart';
 
 import 'category.dart';
@@ -7,7 +6,7 @@ import 'category.dart';
 class Month {
 
   static var months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-  static Category _others = Category("Others", Color(math.Random().nextInt(0xffffffff)), null);
+  static Category _others = Category("Others", Color(0xff607d8b), null);
 
   int year;
   int month;
@@ -43,9 +42,14 @@ class Month {
     List<MapEntry<Category, double>> lst = map.entries.toList();
     lst.sort((a, b) => b.value.compareTo(a.value));
     double rest_val = 0;
-    lst.sublist(8).forEach((MapEntry<Category, double> e){rest_val += e.value;});
-    lst[8] = MapEntry(_others, rest_val);
-    return lst.sublist(0, 9);
+    if(lst.length > 8) {
+      lst.sublist(8).forEach((MapEntry<Category, double> e) {
+        rest_val += e.value;
+      });
+      lst[8] = MapEntry(_others, rest_val);
+      return lst.sublist(0, 9);
+    }
+    return lst;
   }
 
   get incomeCategoryBalance {
@@ -60,7 +64,7 @@ class Month {
     List<MapEntry<Category, double>> lst = map.entries.toList();
     lst.sort((a, b) => a.value.compareTo(b.value));
     double rest_val = 0;
-    if (lst.length > 7) {
+    if (lst.length > 5) {
       lst.sublist(5).forEach((MapEntry<Category, double> e) {
         rest_val += e.value;
       });

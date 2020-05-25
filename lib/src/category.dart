@@ -1,5 +1,4 @@
 import 'dart:ui';
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 class Category {
@@ -8,7 +7,9 @@ class Category {
   Color color;
   IconData icon;
 
-  Category(this.name, this.color, this.icon);
+  List<String> causes;
+
+  Category(this.name, this.color, this.icon, {this.causes});
 
   String toString() => name;
 

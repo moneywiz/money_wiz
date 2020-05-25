@@ -4,6 +4,7 @@ import 'package:moneywiz/src/day.dart';
 import 'package:moneywiz/src/data.dart';
 import 'package:moneywiz/src/month.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:moneywiz/view/account_form_view.dart';
 import 'package:moneywiz/view/limit_view.dart';
 import 'package:moneywiz/view/stats_view.dart';
 import 'package:moneywiz/view/update_categories_view.dart';
@@ -49,7 +50,7 @@ class AccountViewState extends State<StatefulWidget> {
               ),
               onChanged: (Account newValue) {
                 if(newValue == _add) {
-                  // TODO - Add Account Form
+                  Navigator.of(context).push( MaterialPageRoute(builder: (context) => (AccountFormView(null))));
                 }
                 else {
                   setState(() {
@@ -91,7 +92,7 @@ class AccountViewState extends State<StatefulWidget> {
           ),
           Expanded(
             child: Container(
-              padding: EdgeInsets.only(top: 40),
+              padding: EdgeInsets.only(top: 20),
               child: ListView(
                 padding: const EdgeInsets.only(left:20),
                 scrollDirection: Axis.vertical,
@@ -106,7 +107,7 @@ class AccountViewState extends State<StatefulWidget> {
                   ),
                   ListTile(
                     title: Text("Calendar"),
-                    subtitle: Text("See all your transactions"),
+                    subtitle: Text("Check all your transactions or add new ones"),
                     leading: Icon(Icons.calendar_today, color: Colors.blue),
                     onTap: (){
                       Navigator.of(context).push( MaterialPageRoute(builder: (context) => DayView(Data.months[DateTime.now().month-1].days[DateTime.now().day-1])));
@@ -121,7 +122,7 @@ class AccountViewState extends State<StatefulWidget> {
                   ),
                   ListTile(
                     title: Text("Statistics"),
-                    subtitle: Text("Analise your data by categories"),
+                    subtitle: Text("Analyze your transaction data"),
                     leading: Icon(Icons.show_chart, color: Colors.blue),
                     onTap: (){
                       Navigator.of(context).push( MaterialPageRoute(builder: (context) => StatsView(4)));
@@ -152,10 +153,26 @@ class AccountViewState extends State<StatefulWidget> {
                   ),
                   ListTile(
                     title: Text("Categories"),
-                    subtitle: Text("create categories to organize your data"),
+                    subtitle: Text("Manage categories to organize your data"),
                     leading: Icon(Icons.loyalty, color: Colors.blue),
                     onTap: (){
                       Navigator.of(context).push( MaterialPageRoute(builder: (context) => (MainCategories())));
+                    },
+                  ),
+                  const Divider(
+                    color: Colors.black12,
+                    height: 20,
+                    thickness: 1,
+                    indent: 65,
+                    endIndent: 10,
+                  ),
+                  ListTile(
+                    enabled: Data.account != Data.allAccounts,
+                    title: Text("Account Settings"),
+                    subtitle: Text("Edit or delete the current account"),
+                    leading: Icon(Icons.account_balance_wallet, color: Data.account != Data.allAccounts ? Colors.blue : Colors.grey),
+                    onTap: (){
+                      Navigator.of(context).push( MaterialPageRoute(builder: (context) => (AccountFormView(Data.account))));
                     },
                   ),
                 ],
