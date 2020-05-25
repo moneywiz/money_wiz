@@ -158,9 +158,16 @@ class MyTile extends StatelessWidget{
             for(int i = 0; i<Data.accounts.length; i++){
               Data.accounts[i].budgets.remove(categories[id]);
             }
+            for(Month month in Data.account.months) {
+              for(Day day in month.days) {
+                List<Transaction> lst = List.from(day.transactions);
+                for(Transaction transaction in lst){
+                  if(transaction.category == categories[id]) day.removeTransaction(transaction);
+                }
+              }
+            }
             categories.removeAt(id);
             updateWidget();
-
             return true;
           }
           return false;

@@ -230,7 +230,7 @@ class StateBarChartState extends State<StatsBarChart> with AutomaticKeepAliveCli
                       dropdownValue = newValue;
                     });
                   },
-                  items: widget.categories
+                  items: getCategories()
                       .map<DropdownMenuItem<Category>>((Category category) {
                     return DropdownMenuItem<Category>(
                       value: category,
@@ -248,6 +248,12 @@ class StateBarChartState extends State<StatsBarChart> with AutomaticKeepAliveCli
         ),
       ),
     );
+  }
+
+  List<Category> getCategories() {
+    List<Category> res = List.from(widget.categories);
+    res.sort((Category a, Category b) => a.name.compareTo(b.name));
+    return res;
   }
 
   BarChartGroupData makeGroupData(int x, double y) {

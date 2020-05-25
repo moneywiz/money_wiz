@@ -24,6 +24,8 @@ class AddCategoryView extends StatefulWidget{
 
 class _AddCategoryView extends State<StatefulWidget> {
 
+  GlobalKey scaffold = new GlobalKey();
+
   bool isAddView;
   List<Category> categories;
   String category_type;
@@ -33,7 +35,7 @@ class _AddCategoryView extends State<StatefulWidget> {
 
   int id;
   String name = "";
-  String limit = "null";
+  double limit = 0.0;
   IconData _icon ;
 
 
@@ -51,7 +53,7 @@ class _AddCategoryView extends State<StatefulWidget> {
       name = c.name;
       pickerColor = c.color;
       _icon = c.icon;
-      limit = Data.account.budgets[c].toString();
+      limit = Data.account.budgets[c];
     }
 
   }
@@ -59,6 +61,7 @@ class _AddCategoryView extends State<StatefulWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffold,
       appBar: AppBar(
         title: isAddView ? Text("New $category_type Category"):  Text("Change $category_type Category"),
       ),
@@ -75,7 +78,7 @@ class _AddCategoryView extends State<StatefulWidget> {
                   title: Text("Category Name"),
                   subtitle: name == "" ? Text("Not Selected") : Text("$name", style: TextStyle(color: Colors.blue),),
                   onTap: (){
-                    createCategoriesNewPopUp(context).then((onValue){
+                    createCategoriesNewPopUp(context, name).then((onValue){
                       if (onValue != null) {
                         setState(() {
                           name = onValue;
@@ -97,19 +100,25 @@ class _AddCategoryView extends State<StatefulWidget> {
                 categories == Data.expenseCategories && Data.account != Data.allAccounts ?
                 ListTile(
                   title: Text("Max Monthly Limit"),
-                  subtitle: limit == "null" ? Text("No Limit") : Text("$limit €", style: TextStyle(color: Colors.blue),),
+                  subtitle: limit == 0.0 || limit == null ? Text("No Limit") : Text("${limit.toStringAsFixed(2)}€", style: TextStyle(color: Colors.blue),),
                   onTap: (){
-                    limitNewPopUp(context).then((onValue){
+                    limitNewPopUp(context, limit).then((onValue){
                       if (onValue != null) {
                         setState(() {
-                          limit = onValue;
+                          if(onValue == "") limit = 0.0;
+                          else {
+                            double val = double.tryParse(onValue);
+                            if (val < 0) (scaffold.currentState as ScaffoldState).showSnackBar(
+                                  SnackBar(content: Text('Only positive values are allowed!')));
+                            else limit = val;
+                          }
                         });
                       }
                     });
-
-                  },
+                  }
                 )
-                :
+                : categories == Data.incomeCategories ?
+                SizedBox.shrink()    :
                 Container(
                   child:
                   ListTile(
@@ -118,14 +127,16 @@ class _AddCategoryView extends State<StatefulWidget> {
                     ),
                   ),
 
-
+                categories == Data.expenseCategories?
                 const Divider(
                   color: Colors.black12,
                   height: 20,
                   thickness: 1,
                   indent: 1,
                   endIndent: 10,
-                ),
+                )
+                :
+                SizedBox.shrink(),
                 InkWell(
                   onTap: (){
                     selectColorPopUp(context);
@@ -196,12 +207,17 @@ class _AddCategoryView extends State<StatefulWidget> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: (){
+          if(name == ""){
+            (scaffold.currentState as ScaffoldState).showSnackBar(
+                SnackBar(content: Text('All fields must be filled!')));
+            return;
+          }
           if(isAddView){
             Category c = new Category(name, pickerColor, _icon);
             categories.add(c);
             if (categories == Data.expenseCategories){
-              if (limit != "null"){
-                Data.account.budgets[c] = double.parse(limit);
+              if (limit != 0.0){
+                Data.account.budgets[c] = limit;
               }
             }
           }
@@ -211,8 +227,8 @@ class _AddCategoryView extends State<StatefulWidget> {
             c.color = pickerColor;
             c.icon = _icon;
             if (categories == Data.expenseCategories){
-              if (limit != "null"){
-                Data.account.budgets[c] = double.parse(limit);
+              if (limit != 0.0){
+                Data.account.budgets[c] = limit;
               }
               else{
                 Data.account.budgets.remove(c);
@@ -258,9 +274,9 @@ class _AddCategoryView extends State<StatefulWidget> {
   }
 
 
-  Future<String> createCategoriesNewPopUp(BuildContext context){
+  Future<String> createCategoriesNewPopUp(BuildContext context, String name){
 
-    TextEditingController customController = TextEditingController();
+    TextEditingController customController = TextEditingController()..text = name;
 
     return showDialog(context: context, builder: (context){
       return AlertDialog(
@@ -282,9 +298,9 @@ class _AddCategoryView extends State<StatefulWidget> {
   }
 
 
-  Future<String> limitNewPopUp(BuildContext context){
+  Future<String> limitNewPopUp(BuildContext context, double value){
 
-    TextEditingController customController = TextEditingController();
+    TextEditingController customController = TextEditingController()..text = value != null ? value.toStringAsFixed(2) : "0.0";
 
     return showDialog(context: context, builder: (context){
       return AlertDialog(
@@ -299,9 +315,6 @@ class _AddCategoryView extends State<StatefulWidget> {
               child: Text("Submit"),
               onPressed: () {
                 String value = customController.text.toString();
-                if (value == ""){
-                  value = "null";
-                }
                 Navigator.of(context).pop(value);
               },
             ),
