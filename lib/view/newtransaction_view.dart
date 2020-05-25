@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:moneywiz/src/category.dart';
 import 'package:moneywiz/src/data.dart';
 import 'package:moneywiz/src/day.dart';
 import 'package:moneywiz/src/month.dart';
@@ -21,6 +22,8 @@ class _NewTransactionState extends State<NewTransaction> {
 
   GlobalKey scaffold = new GlobalKey();
 
+  AppBar appBar;
+
   Day day;
   Transaction tr;
   bool isNew;
@@ -28,6 +31,7 @@ class _NewTransactionState extends State<NewTransaction> {
   bool gain;
   DateTime formDateTime;
   String dropdownValue;
+  Map<String,Category> allCats;
 
   TextEditingController _valueController;
   bool _validValue;
@@ -53,6 +57,16 @@ class _NewTransactionState extends State<NewTransaction> {
       _descrController.text=tr.description;
       dropdownValue=tr.category?.name??"";
     }
+
+    Map<String,Category> exp=Map.fromIterable(Data.expenseCategories, key: (elem)=>elem.name.toString(), value: (elem)=>elem);
+    Map<String,Category> inc=Map.fromIterable(Data.incomeCategories, key: (elem)=>elem.name.toString(), value: (elem)=>elem);
+    allCats=Map();
+    allCats.addAll(exp);
+    allCats.addAll(inc);
+
+    appBar=AppBar(
+      title: Text(isNew ? "New Transaction" : "Transaction"),
+    );
   }
 
   @override
@@ -80,13 +94,12 @@ class _NewTransactionState extends State<NewTransaction> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffold,
-      appBar: AppBar(
-        title: Text(isNew ? "New Transaction" : "Transaction"),
-      ),
-      resizeToAvoidBottomPadding: false,
-      body: Column(
+      appBar: appBar,
+      //resizeToAvoidBottomPadding: false,
+      body: SingleChildScrollView(child: ConstrainedBox(constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height-appBar.preferredSize.height-MediaQuery.of(context).padding.top), child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           Text("Transaction's Time"),
           RaisedButton(
@@ -109,7 +122,7 @@ class _NewTransactionState extends State<NewTransaction> {
                   onPressed: () {
                     setState(() {
                       gain = ! gain;
-                      dropdownValue="";
+                      dropdownValue=null;
                     });
                   },
                   color: Colors.white,
@@ -149,6 +162,7 @@ class _NewTransactionState extends State<NewTransaction> {
           ),
 
           DropdownButton<String>(
+            value: dropdownValue,
             icon: Icon(Icons.arrow_downward),
             iconSize: 24,
             elevation: 16,
@@ -167,7 +181,7 @@ class _NewTransactionState extends State<NewTransaction> {
             items: _getDropdown(),
           ),
         ],
-      ),
+      ))),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           if (_validValue && _valueController.text!="") {
@@ -176,6 +190,7 @@ class _NewTransactionState extends State<NewTransaction> {
 
             tr.description=_descrController.text;
             tr.cause=_causeController.text;
+            tr.category=allCats.containsKey(dropdownValue)?allCats[dropdownValue]:null;
 
             if (isNew) day.addTransaction(tr);
             Navigator.of(context).pop();
