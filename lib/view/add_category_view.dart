@@ -26,17 +26,24 @@ class _AddCategoryView extends State<StatefulWidget> {
 
   bool isAddView;
   List<Category> categories;
+  String category_type;
 
   Color pickerColor ;
   Color currentColor = Color(0xff443a48);
 
   int id;
   String name = "";
-  String limit = "";
+  String limit = "null";
   IconData _icon ;
 
 
   _AddCategoryView(bool isAddView, int id, this.categories){
+    if(categories == Data.expenseCategories){
+      category_type = "Expense";
+    }
+    else{
+      category_type = "Income";
+    }
     this.id = id;
     this.isAddView = isAddView;
     if (!isAddView){
@@ -53,7 +60,7 @@ class _AddCategoryView extends State<StatefulWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: isAddView ? Text("New Category"):  Text("Change Category"),
+        title: isAddView ? Text("New $category_type Category"):  Text("Change $category_type Category"),
       ),
       body:
       Column(
@@ -193,7 +200,9 @@ class _AddCategoryView extends State<StatefulWidget> {
             Category c = new Category(name, pickerColor, _icon);
             categories.add(c);
             if (categories == Data.expenseCategories){
-              Data.account.budgets[c] = double.parse(limit);
+              if (limit != "null"){
+                Data.account.budgets[c] = double.parse(limit);
+              }
             }
           }
           else{
@@ -202,7 +211,12 @@ class _AddCategoryView extends State<StatefulWidget> {
             c.color = pickerColor;
             c.icon = _icon;
             if (categories == Data.expenseCategories){
-              Data.account.budgets[c] = double.parse(limit);
+              if (limit != "null"){
+                Data.account.budgets[c] = double.parse(limit);
+              }
+              else{
+                Data.account.budgets.remove(c);
+              }
             }
           }
           Navigator.of(context).pop();
@@ -283,7 +297,11 @@ class _AddCategoryView extends State<StatefulWidget> {
               elevation: 5.0,
               child: Text("Submit"),
               onPressed: () {
-                Navigator.of(context).pop(customController.text.toString());
+                String value = customController.text.toString();
+                if (value == ""){
+                  value = "null";
+                }
+                Navigator.of(context).pop(value);
               },
             ),
           ]

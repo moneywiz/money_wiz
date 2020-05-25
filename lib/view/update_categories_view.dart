@@ -19,9 +19,20 @@ class MainCategories extends StatefulWidget{
 
 class _MainCategories extends State<StatefulWidget> {
 
+  bool incomeSelected = false;
+
 //Navigator.of(context).push( MaterialPageRoute(builder: (context) => AddCategoryView(true, 0))).then((onValue){
   @override
   Widget build(BuildContext context) {
+    Data.expenseCategories.sort((c1, c2){
+      return c1.name.compareTo(c2.name);
+    });
+
+    Data.incomeCategories.sort((c1, c2){
+      return c1.name.compareTo(c2.name);
+    });
+
+
     return DefaultTabController(
         length: 2,
         child: Scaffold(
@@ -52,7 +63,7 @@ class _MainCategories extends State<StatefulWidget> {
                         shrinkWrap: true,
                         children: <Widget>[
                           for (int i = 0; i<Data.expenseCategories.length; i++)
-                            MyTile(i, Data.expenseCategories, updateWidget),
+                            MyTile(i, Data.expenseCategories, updateWidget, updateTabSelected),
 
                         ],
                       ),
@@ -61,7 +72,7 @@ class _MainCategories extends State<StatefulWidget> {
                         shrinkWrap: true,
                         children: <Widget>[
                           for (int i = 0; i<Data.incomeCategories.length; i++)
-                            MyTile(i, Data.incomeCategories, updateWidget),
+                            MyTile(i, Data.incomeCategories, updateWidget, updateTabSelected),
 
                         ],
                       ),
@@ -72,7 +83,13 @@ class _MainCategories extends State<StatefulWidget> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Navigator.of(context).pop();
+            List<Category> l = Data.expenseCategories;
+            if (incomeSelected){
+              l = Data.incomeCategories;
+            }
+            Navigator.of(context).push( MaterialPageRoute(builder: (context) => (AddCategoryView(true, 0, l)))).then((onValue){
+              updateWidget();
+            });
           },
           child: Icon(Icons.add),
           backgroundColor: Colors.blue,
@@ -86,6 +103,10 @@ class _MainCategories extends State<StatefulWidget> {
     setState((){});
   }
 
+  updateTabSelected(bool value){
+    incomeSelected = value;
+  }
+
 
 
 }
@@ -97,13 +118,20 @@ class MyTile extends StatelessWidget{
   List<Category> categories;
 
   Function() updateWidget;
+  Function(bool value) updateTabSelected;
 
   @override
-  MyTile(this.id, this.categories, this.updateWidget);
+  MyTile(this.id, this.categories, this.updateWidget, this.updateTabSelected);
 
 
   @override
   Widget build(BuildContext context) {
+    if (categories == Data.incomeCategories){
+      updateTabSelected(true);
+    }
+    else{
+      updateTabSelected(false);
+    }
     return Dismissible(
       key: UniqueKey(),
       background: Container(
