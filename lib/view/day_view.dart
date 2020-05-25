@@ -50,7 +50,16 @@ class _DayViewState extends State<DayView> {
             ],
           )
         ),
-      )
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => NewTransaction(day))).then((value) {
+            setState(() {});
+          });
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Colors.blue,
+      ),
     );
   }
 
@@ -88,18 +97,6 @@ class _DayViewState extends State<DayView> {
   Widget _transactionsWidget() {
     return Column(
       children: <Widget>[
-        Padding(
-          padding: EdgeInsets.all(32),
-          child: RaisedButton(
-            child: Text("Add new Transaction", style: TextStyle(fontSize: 24)),
-            color: Colors.blue,
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => NewTransaction(day))).then((value) {
-                setState(() {});
-              });
-            },
-          )
-        ),
         Expanded(
           child: Padding(
             padding: EdgeInsets.all(16),
@@ -169,11 +166,42 @@ class _DayViewState extends State<DayView> {
     for (Transaction t in day.transactions) {
       lst.add(Card(
         child: FlatButton(
-          child: Row(
-            children: <Widget>[
-              Text("${t.cause}: "),
-              Text((t.value>=0?"+":"")+"${format.format(t.value)}€", style: TextStyle(color: (t.value>=0?Colors.green:Colors.red)))
-            ],
+          child: Container(
+            padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+            child: Row(
+              children: <Widget>[
+                Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: <Widget>[
+                          Text("${t.cause}", style: TextStyle(fontSize: 14,))
+                        ],
+                      ),
+                      Container(
+                          padding: EdgeInsets.only(top: 12),
+                          child: Row(
+                            children: <Widget>[
+                              Icon(Icons.access_time, size: 16),
+                              Text(" ${t.time.hour}:${t.time.minute}   |   ", style: TextStyle(fontSize: 13,)),
+                              Icon(t.category.icon, size: 21),
+                              Text("  ${t.category.name}", style: TextStyle(fontSize: 13,))
+                            ],
+                          )
+                      )
+                    ]
+                ),
+                Column(
+                  children: <Widget>[
+                    Container(
+                      alignment: Alignment.centerRight,
+                      child: Text((t.value>=0?"+":"")+"${format.format(t.value)}€", style: TextStyle(fontSize: 16, color: (t.value>=0?Colors.green:Colors.red))),
+                    )
+                  ],
+                )
+              ],
+              mainAxisAlignment: MainAxisAlignment.spaceBetween
+            )
           ),
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) => NewTransaction(day,t))).then((value) {

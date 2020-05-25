@@ -102,7 +102,7 @@ class _Limit extends State<Limit> {
             child: Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.only(left: 30.0),
+                  padding: EdgeInsets.fromLTRB(30,2,0,0),
                   child:
                     Row(children: <Widget>[
                         Text("Category: " ,style: TextStyle(fontSize: 14),),
@@ -141,7 +141,7 @@ class _Limit extends State<Limit> {
                     ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: 5),
+                  padding: EdgeInsets.fromLTRB(12,7,12,2),
                   child:
                     LinearPercentIndicator(
                       percent: percent,
@@ -154,7 +154,7 @@ class _Limit extends State<Limit> {
                   height: 20,
                   thickness: 1,
                   indent: 20,
-                  endIndent: 10,
+                  endIndent: 20,
                 )
               ]
             )
@@ -215,10 +215,19 @@ class _Limit extends State<Limit> {
                     )
                   ]
                   ),
-                  TextField(
-                    controller: customController,
-                    keyboardType: TextInputType.number,
-                  ),
+                  Row(children: <Widget>[
+                    Text("Budget:  " ,style: TextStyle(fontSize: 14),),
+                    Flexible (
+                        child: Container(
+                            padding: EdgeInsets.fromLTRB(16, 0, 70, 0),
+                            child: TextField(
+                              controller: customController,
+                              keyboardType: TextInputType.number,
+                            )
+                        )
+                    )
+                  ]
+                  )
                 ],
               ),
               actions: <Widget>[
@@ -272,14 +281,23 @@ class _Limit extends State<Limit> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Row(children: <Widget>[
-                Text("Category: " ,style: TextStyle(fontSize: 14),),
-                Text(category.name ,style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
-              ]
+                  Text("Category:  " ,style: TextStyle(fontSize: 14),),
+                  Text(category.name ,style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
+                ]
               ),
-              TextField(
-                controller: customController,
-                keyboardType: TextInputType.number,
-              ),
+              Row(children: <Widget>[
+                  Text("Budget:  " ,style: TextStyle(fontSize: 14),),
+                  Flexible (
+                    child: Container(
+                        padding: EdgeInsets.fromLTRB(12, 0, 70, 0),
+                        child: TextField(
+                          controller: customController,
+                          keyboardType: TextInputType.number
+                        )
+                    )
+                  )
+                ]
+              )
             ],
           ),
           actions: <Widget>[
