@@ -11,64 +11,52 @@ import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 
 
 class AddCategoryView extends StatefulWidget{
-  @override
-  State<StatefulWidget> createState() => _AddCategoryView(newCategory, updateCategory, tipo, c, limit, id);
 
-  Function(Category c, String limit) newCategory;
-  Function(Category c, String limit, int id) updateCategory;
-  String tipo;
-  Category c;
-  double limit;
+  bool isAddView;
+
   int id;
 
-
-  AddCategoryView(newCategory, updateCategory, tipo, c, limit, id){
-    this.newCategory = newCategory;
-    this.tipo = tipo;
-    this.c = c;
-    this.limit = limit;
+  AddCategoryView(bool isAddView, int id){
+    this.isAddView = isAddView;
     this.id = id;
-    this.updateCategory = updateCategory;
   }
+
+  @override
+  State<StatefulWidget> createState() => _AddCategoryView(isAddView, id);
 }
 
 
 class _AddCategoryView extends State<StatefulWidget> {
 
-  String tipo;
-  int id;
+  bool isAddView;
 
   Color pickerColor ;
   Color currentColor = Color(0xff443a48);
+
+  int id;
   String name = "";
   String limit = "";
-  Icon _icon ;
-  IconData _icondata;
+  IconData _icon ;
 
-  Function(Category c, String limit) newCategory;
-  Function(Category c, String limit, int id) updateCategory;
 
-  _AddCategoryView(newCategory, updateCategory, tipo, c, limit, id){
-    if (tipo == "new"){
-      this.newCategory = newCategory;
-      this.tipo = tipo;
-    }
-    else{
+  _AddCategoryView(bool isAddView, int id){
+    this.id = id;
+    this.isAddView = isAddView;
+    if (!isAddView){
+      Category c = Data.expenseCategories[id];
       name = c.name;
       pickerColor = c.color;
-      _icondata = c.icon;
-      this.limit = limit.toString();
-      _icon = Icon(_icondata);
-      this.id = id;
-      this.updateCategory = updateCategory;
+      _icon = c.icon;
+      limit = Data.account.budgets[c].toString();
     }
+
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: tipo == "new" ? Text("New Category") : Text("Changing Category"),
+        title: isAddView ? Text("New Category"):  Text("Change Category"),
       ),
       body:
       Column(
@@ -111,7 +99,7 @@ class _AddCategoryView extends State<StatefulWidget> {
                   title: Text("Max Monthly Limit"),
                   subtitle: limit == "" ? Text("Non-Limit") : Text("$limit €", style: TextStyle(color: Colors.blue),),
                   onTap: (){
-                    createCategoriesNewPopUp(context).then((onValue){
+                    limitNewPopUp(context).then((onValue){
                       if (onValue != null) {
                         setState(() {
                           limit = onValue;
@@ -132,8 +120,7 @@ class _AddCategoryView extends State<StatefulWidget> {
                   onTap: (){
                     selectColorPopUp(context);
                   },
-                  child:
-                  Row(
+                  child: Row(
                     children: <Widget>[
                       Expanded(
                         child: ListTile(
@@ -179,7 +166,7 @@ class _AddCategoryView extends State<StatefulWidget> {
                         child:
                         Padding(
                           padding: EdgeInsets.only(right: 0.0),
-                          child: _icon,
+                          child: Icon(_icon, size: 50),
                         ),
                       ),
                     ],
@@ -194,18 +181,19 @@ class _AddCategoryView extends State<StatefulWidget> {
               child: Padding(
                 padding: EdgeInsets.only(right: 20.0),
                 child: RaisedButton(
-                  child: (tipo == "new") ? Text("Create", style: TextStyle(fontSize: 14, color: Colors.white),) : Text("Submit", style: TextStyle(fontSize: 14, color: Colors.white),),
+                  child:  isAddView ? Text("Create", style: TextStyle(fontSize: 14, color: Colors.white),) : Text("Create", style: TextStyle(fontSize: 14, color: Colors.white),),
                   color: Colors.blue,
                   onPressed: (){
-                    Navigator.of(context).pop();
-                    Category c = new Category(name, pickerColor, _icondata);
-                    if(tipo == "new"){
-                      newCategory(c, limit);
+                    Category c = new Category(name, pickerColor, _icon);
+                    if(isAddView){
+                      Data.expenseCategories.add(c);
+                      Data.account.budgets[c] = double.parse(limit);
                     }
                     else{
-                      updateCategory(c, limit, id);
+                      Data.expenseCategories[id] = c;
+                      Data.account.budgets[c] = double.parse(limit);
                     }
-
+                    Navigator.of(context).pop();
                   },
                 ),
               ),
@@ -219,23 +207,20 @@ class _AddCategoryView extends State<StatefulWidget> {
   }
 
   _pickIcon() async {
-    IconData _icondata = await FlutterIconPicker.showIconPicker(context, iconPackMode: IconPack.material);
-
-    _icon = Icon(_icondata, size: 50);
+    _icon = await FlutterIconPicker.showIconPicker(context, iconPackMode: IconPack.materialOutline);
     setState((){});
 
-    print('Picked Icon:  $_icondata');
   }
 
-   selectColorPopUp(BuildContext context){
+  selectColorPopUp(BuildContext context){
 
     return showDialog(context: context, builder: (context){
       return AlertDialog(
-          title: Text("Pick one Color :"),
-          //content: TextField(
-          //),
-          actions: <Widget>[
-            BlockPicker(
+        title: Text("Pick one Color :"),
+        //content: TextField(
+        //),
+        actions: <Widget>[
+          BlockPicker(
               pickerColor: currentColor,
               onColorChanged:  (Color color){
                 setState((){
@@ -243,8 +228,8 @@ class _AddCategoryView extends State<StatefulWidget> {
                 });
                 Navigator.of(context).pop();
               }),
-              ],
-            );
+        ],
+      );
     });
   }
 
@@ -271,5 +256,30 @@ class _AddCategoryView extends State<StatefulWidget> {
       );
     });
   }
+
+
+  Future<String> limitNewPopUp(BuildContext context){
+
+    TextEditingController customController = TextEditingController();
+
+    return showDialog(context: context, builder: (context){
+      return AlertDialog(
+          title: Text("Category Limit"),
+          content: TextField(
+            controller: customController,
+          ),
+          actions: <Widget>[
+            MaterialButton(
+              elevation: 5.0,
+              child: Text("Submit"),
+              onPressed: () {
+                Navigator.of(context).pop(customController.text.toString());
+              },
+            ),
+          ]
+      );
+    });
+  }
+
 
 }
