@@ -1,5 +1,4 @@
 import 'dart:ui';
-import 'dart:math' as math;
 import 'package:moneywiz/src/day.dart';
 
 import 'category.dart';
@@ -7,7 +6,7 @@ import 'category.dart';
 class Month {
 
   static var months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-  static Category _others = Category("Others", Color(math.Random().nextInt(0xffffffff)), null);
+  static Category _others = Category("Others", Color(0xff607d8b), null);
 
   int year;
   int month;
