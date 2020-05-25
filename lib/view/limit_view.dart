@@ -233,9 +233,21 @@ class _Limit extends State<Limit> {
                   elevation: 5.0,
                   child: Text("Submit", style: TextStyle(fontWeight: FontWeight.bold)),
                   onPressed: () {
+                    if(category == null) {
+                      (scaffold.currentState as ScaffoldState).showSnackBar(
+                          SnackBar(content: Text('Category must be specified!')));
+                      Navigator.of(context).pop();
+                      return;
+                    }
+                    if(customController.value.text == "") {
+                      (scaffold.currentState as ScaffoldState).showSnackBar(
+                          SnackBar(content: Text('Budget value must be filled!')));
+                      Navigator.of(context).pop();
+                      return;
+                    }
                     double newValue = double.tryParse(customController.value.text);
                     if(newValue > 0) Data.account.budgets[category] = newValue;
-                    else (scaffold.currentState as ScaffoldState).showSnackBar(SnackBar(content: Text('Negative budget values are not allowed!')));
+                    else (scaffold.currentState as ScaffoldState).showSnackBar(SnackBar(content: Text('Only positive budget values are allowed!')));
                     Navigator.of(context).pop();
                   },
                 ),
@@ -290,6 +302,12 @@ class _Limit extends State<Limit> {
               elevation: 5.0,
               child: Text("Submit", style: TextStyle(fontWeight: FontWeight.bold)),
               onPressed: () {
+                if(customController.value.text == "") {
+                  (scaffold.currentState as ScaffoldState).showSnackBar(
+                      SnackBar(content: Text('Budget value must be filled!')));
+                  Navigator.of(context).pop();
+                  return;
+                }
                 double newValue = double.tryParse(customController.value.text);
                 if(newValue > 0) Data.account.budgets[category] = newValue;
                 else (scaffold.currentState as ScaffoldState).showSnackBar(SnackBar(content: Text('Negative budget values are not allowed!')));
