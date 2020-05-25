@@ -148,7 +148,7 @@ class _MonthViewState extends State<MonthView> {
 
     firstDay=firstDay.add(Duration(days: 7*i));
     for (var d=0;d<7;d++) {
-      days.add(Data.months[firstDay.month-1].days[firstDay.day-1]);
+      if (firstDay.month>0 && firstDay.month<7) days.add(Data.months[firstDay.month-1].days[firstDay.day-1]);
       firstDay=firstDay.add(Duration(days: 1));
     }
 

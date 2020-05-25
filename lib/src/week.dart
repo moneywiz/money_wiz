@@ -31,8 +31,15 @@ class Week {
   get weekString {
     int m1=days[0].month.month;
     int m2=days[6].month.month;
-    if (m1!=m2) return "${days[0].month.monthString} ${days[0].day} - ${days[6].month.monthString} ${days[6].day}";
-    else return "${days[0].month.monthString} ${days[0].day} - ${days[6].day}";
+    if (m1!=m2) return "${days[0].month.monthString} ${days[0].day}-${days[6].month.monthString} ${days[6].day}";
+    else return "${days[0].month.monthString} ${days[0].day}-${days[6].day}";
+  }
+
+  double getPercent([bool pos=true]) {
+    var total=positive+negative.abs();
+    if (total==0) return null;
+    if (pos) return ((positive)/total);
+    return ((negative.abs())/total);
   }
 
 }

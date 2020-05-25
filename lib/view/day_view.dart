@@ -85,24 +85,24 @@ class _DayViewState extends State<DayView> {
         Text("Total Balance", style: TextStyle(fontSize: 26)),
         Text((day.balance>=0?"+":"")+"${format.format(day.balance)}€", style: TextStyle(fontSize: 50, color: (day.balance>=0?Colors.green:Colors.red))),
         Padding(
-            padding: EdgeInsets.fromLTRB(100, 0, 100, 0),
-            child: CalendarHeader(
-                showHeader: true,
-                headerTitle: "${day.month.monthString} ${day.day}",
-                onLeftButtonPressed: (){
-                  this.setState(() {
-                    _changeDay(true);
-                  });
-                },
-                onRightButtonPressed: (){
-                  this.setState(() {
-                    _changeDay(false);
-                  });
-                },
-                showHeaderButtons: true,
-                isTitleTouchable: false,
-                onHeaderTitlePressed: null
-            )
+          padding: EdgeInsets.fromLTRB(100, 0, 100, 0),
+          child: CalendarHeader(
+            showHeader: true,
+            headerTitle: "${day.month.monthString} ${day.day}",
+            onLeftButtonPressed: (){
+              this.setState(() {
+                _changeDay(true);
+              });
+            },
+            onRightButtonPressed: (){
+              this.setState(() {
+                _changeDay(false);
+              });
+            },
+            showHeaderButtons: true,
+            isTitleTouchable: false,
+            onHeaderTitlePressed: null
+          )
         ),
         const Divider(
           color: Colors.black12,
@@ -119,7 +119,7 @@ class _DayViewState extends State<DayView> {
   }
 
   Widget _transactionsWidget() {
-    return Column(
+    return day.transactions.length>0?Column(
       children: <Widget>[
         Expanded(
           child: Padding(
@@ -130,7 +130,12 @@ class _DayViewState extends State<DayView> {
           )
         )
       ],
-    );
+    )
+    :Padding(padding: EdgeInsets.symmetric(horizontal: 32), child: Text(
+      "Add a new transaction and it will be displayed here!",
+      style: TextStyle(color: Colors.black26, fontSize: 40),
+      textAlign: TextAlign.center,
+    ));
   }
 
   Widget _getPosNegStats() {
@@ -156,6 +161,7 @@ class _DayViewState extends State<DayView> {
               ),
             ],
           ),
+          VerticalDivider(),
           Expanded(child:Column(
             children: <Widget>[
               LinearPercentIndicator(
@@ -175,54 +181,8 @@ class _DayViewState extends State<DayView> {
               )
             ],
           )
-          )],
+        )],
       )
-      /*child: Column(
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                "+${format.format(day.positive)}€",
-                style: TextStyle(
-                  color: Colors.green,
-                  fontSize: 20,
-                )
-              ),
-              Expanded(
-                child: LinearPercentIndicator(
-                  percent: day.getPercent()??0,
-                  lineHeight: 8,
-                  progressColor: Colors.green,
-                  animateFromLastPercent: true,
-                  animationDuration: 500,
-                )
-              )
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                "-${format.format(day.negative.abs())}€",
-                style: TextStyle(
-                  color: Colors.red,
-                  fontSize: 20,
-                )
-              ),
-              Expanded(
-                child: LinearPercentIndicator(
-                  percent: day.getPercent(false)??0,
-                  lineHeight: 8,
-                  progressColor: Colors.red,
-                  animateFromLastPercent: true,
-                  animationDuration: 500,
-                )
-              )
-            ],
-          )
-        ],
-      )*/
     );
   }
 
@@ -255,7 +215,7 @@ class _DayViewState extends State<DayView> {
             ),
           ),
           confirmDismiss: (direction) async {
-            return await RemovePopUp(context).then((onValue){
+            return await removePopUp(context).then((onValue){
               if(onValue == true){
                 day.removeTransaction(t);
                 setState(() {});
@@ -359,7 +319,7 @@ class _DayViewState extends State<DayView> {
 
   }
 
-  Future<bool> RemovePopUp(BuildContext context){
+  Future<bool> removePopUp(BuildContext context){
 
     return showDialog(context: context, builder: (context){
       return AlertDialog(
