@@ -51,7 +51,7 @@ class _NewTransactionState extends State<NewTransaction> {
       _valueController.text="${tr.value.abs()}";
       _causeController.text=tr.cause;
       _descrController.text=tr.description;
-      dropdownValue=tr.category.name;
+      dropdownValue=tr.category?.name??"";
     }
   }
 

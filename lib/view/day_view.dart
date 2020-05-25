@@ -96,7 +96,7 @@ class _DayViewState extends State<DayView> {
       children: <Widget>[
         Expanded(
           child: Padding(
-            padding: EdgeInsets.fromLTRB(16, 5, 16, 16),
+            padding: EdgeInsets.fromLTRB(16, 5, 16, 80),
             child: SingleChildScrollView(
               child: Column(children: _getTransactions())
             )
@@ -109,7 +109,48 @@ class _DayViewState extends State<DayView> {
   Widget _getPosNegStats() {
     return Padding(
       padding: EdgeInsets.fromLTRB(10, 20, 10, 10),
-      child: Column(
+      child: Row(
+        children: <Widget>[
+          Column(
+            children: <Widget>[
+              Text(
+                  "+${format.format(day.positive)}€",
+                  style: TextStyle(
+                    color: Colors.green,
+                    fontSize: 20,
+                  )
+              ),
+              Text(
+                  "-${format.format(day.negative.abs())}€",
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 20,
+                  )
+              ),
+            ],
+          ),
+          Expanded(child:Column(
+            children: <Widget>[
+              LinearPercentIndicator(
+                percent: day.getPercent()??0,
+                lineHeight: 8,
+                progressColor: Colors.green,
+                animateFromLastPercent: true,
+                animationDuration: 500,
+              ),
+              Padding(padding: EdgeInsets.symmetric(vertical: 8)),
+              LinearPercentIndicator(
+                percent: day.getPercent(false)??0,
+                lineHeight: 8,
+                progressColor: Colors.red,
+                animateFromLastPercent: true,
+                animationDuration: 500,
+              )
+            ],
+          )
+          )],
+      )
+      /*child: Column(
         children: <Widget>[
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -154,7 +195,7 @@ class _DayViewState extends State<DayView> {
             ],
           )
         ],
-      )
+      )*/
     );
   }
 
@@ -214,8 +255,8 @@ class _DayViewState extends State<DayView> {
                               children: <Widget>[
                                 Icon(Icons.access_time, size: 16),
                                 Text(" ${t.time.hour.toString().padLeft(2, '0')}:${t.time.minute.toString().padLeft(2, '0')}   |   ", style: TextStyle(fontSize: 13,)),
-                                Icon(t.category.icon, size: 21),
-                                Text("  ${t.category.name}", style: TextStyle(fontSize: 13,))
+                                Icon(t.category?.icon??null, size: 21),
+                                Text("  ${t.category?.name??null}", style: TextStyle(fontSize: 13,))
                               ],
                             )
                         )
