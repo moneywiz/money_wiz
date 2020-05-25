@@ -43,10 +43,10 @@ class _StatsCategoryViewState extends State<StatsCategoryView> with AutomaticKee
             child: TabBarView(
               children: <Widget>[
                 Container(
-                  child: getPieChart(widget.month.ExpenseCategoryBalance)
+                  child: getPieChart(widget.month.expenseCategoryBalance)
                 ),
                 Container(
-                  child: getPieChart(widget.month.IncomeCategoryBalance)
+                  child: getPieChart(widget.month.incomeCategoryBalance)
                 ),
               ],
             ),

@@ -3,6 +3,7 @@ import 'package:moneywiz/src/data.dart';
 import 'package:moneywiz/src/day.dart';
 import 'package:moneywiz/src/month.dart';
 import 'package:moneywiz/src/transaction.dart';
+import 'package:moneywiz/view/newtransaction_view.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_calendar_carousel/src/calendar_header.dart';
@@ -92,6 +93,11 @@ class _DayViewState extends State<DayView> {
           child: RaisedButton(
             child: Text("Add new Transaction", style: TextStyle(fontSize: 24)),
             color: Colors.blue,
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => NewTransaction(day))).then((value) {
+                setState(() {});
+              });
+            },
           )
         ),
         Expanded(
@@ -126,6 +132,8 @@ class _DayViewState extends State<DayView> {
                   percent: day.getPercent()??0,
                   lineHeight: 8,
                   progressColor: Colors.green,
+                  animateFromLastPercent: true,
+                  animationDuration: 500,
                 )
               )
             ],
@@ -145,6 +153,8 @@ class _DayViewState extends State<DayView> {
                   percent: day.getPercent(false)??0,
                   lineHeight: 8,
                   progressColor: Colors.red,
+                  animateFromLastPercent: true,
+                  animationDuration: 500,
                 )
               )
             ],
@@ -165,7 +175,12 @@ class _DayViewState extends State<DayView> {
               Text((t.value>=0?"+":"")+"${format.format(t.value)}€", style: TextStyle(color: (t.value>=0?Colors.green:Colors.red)))
             ],
           ),
-        )
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => NewTransaction(day,t))).then((value) {
+              setState(() {});
+            });
+          },
+        ),
       ));
     }
     return lst;

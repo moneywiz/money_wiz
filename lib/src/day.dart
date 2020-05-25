@@ -29,22 +29,18 @@ class Day {
     _negative += t.value < 0 ? t.value : 0;
   }
 
-  get ExpenseCategoryBalance {
+  get expenseCategoryBalance {
     Map<Category, double> map = Map();
     for (var t in transactions) {
-      for (var c in t.categories) {
-        if (Data.expenseCategories.contains(c)) map[c] = map.containsKey(c) ? map[c] + t.value.abs(): t.value.abs();
-      }
+      map[t.category] = map.containsKey(t.category) ? map[t.category] + t.value.abs(): t.value.abs();
     }
     return map;
   }
 
-  get IncomeCategoryBalance {
+  get incomeCategoryBalance {
     Map<Category, double> map = Map();
     for (var t in transactions) {
-      for (var c in t.categories) {
-        if (Data.incomeCategories.contains(c)) map[c] = map.containsKey(c) ? map[c] + t.value.abs(): t.value.abs();
-      }
+      map[t.category] = map.containsKey(t.category) ? map[t.category] + t.value.abs(): t.value.abs();
     }
     return map;
   }
@@ -55,7 +51,7 @@ class Day {
     if (category == null) return _positive;
     double res = 0;
     for(Transaction t in transactions) {
-      if (t.categories.contains(category) && t.value > 0) res += t.value;
+      if (t.category==category && t.value > 0) res += t.value;
     }
     return res;
   }
@@ -66,7 +62,7 @@ class Day {
     if (category == null) return _negative;
     double res = 0;
     for(Transaction t in transactions) {
-      if (t.categories.contains(category) && t.value < 0) res += t.value;
+      if (t.category==category && t.value < 0) res += t.value;
     }
     return res;
   }
