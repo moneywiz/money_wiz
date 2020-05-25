@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moneywiz/src/account.dart';
 import 'package:moneywiz/src/category.dart';
 import 'package:moneywiz/src/day.dart';
 
@@ -11,6 +12,8 @@ class Transaction {
   String description;
   String cause;
   Category category;
+
+  Account account;
 
   Transaction(this.day, this.value, [bool autoAdd=true]) {
     cause="";

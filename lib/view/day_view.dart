@@ -43,15 +43,18 @@ class _DayViewState extends State<DayView> {
           )),
         ]
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => NewTransaction(day))).then((value) {
-            setState(() {});
-          });
-        },
-        child: Icon(Icons.add),
-        backgroundColor: Colors.blue,
-      ),
+      floatingActionButton: Visibility(
+        visible: Data.account != Data.allAccounts,
+        child: FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => NewTransaction(day))).then((value) {
+              setState(() {});
+            });
+          },
+          child: Icon(Icons.add),
+          backgroundColor: Colors.blue,
+        )
+      )
     );
   }
 
@@ -223,9 +226,13 @@ class _DayViewState extends State<DayView> {
     );
   }
 
+  double toDouble(TimeOfDay myTime) => myTime.hour + myTime.minute/60.0;
+
   List<Widget> _getTransactions() {
     List<Widget> lst=List();
-    for (Transaction t in day.transactions) {
+    List<Transaction> transactions = day.transactions;
+    transactions.sort((Transaction a, Transaction b) => toDouble(a.time).compareTo(toDouble(b.time)));
+    for (Transaction t in transactions) {
       lst.add(Card(
         child: Dismissible(
           key: UniqueKey(),
@@ -283,7 +290,8 @@ class _DayViewState extends State<DayView> {
                                 Text("  ${t.category?.name??null}", style: TextStyle(fontSize: 13,))
                               ],
                             )
-                        )
+                        ),
+                        _getAccount(t)
                       ]
                   ),
                   Column(
@@ -308,6 +316,21 @@ class _DayViewState extends State<DayView> {
       ));
     }
     return lst;
+  }
+
+  Widget _getAccount(Transaction t) {
+    if(Data.account == Data.allAccounts){
+      return Container(
+          padding: EdgeInsets.only(top: 12),
+          child: Row(
+            children: <Widget>[
+              Icon(Icons.account_balance_wallet, size: 16),
+              Text(" ${t.account.name}", style: TextStyle(fontSize: 13,)),
+            ],
+          )
+      );
+    }
+    return SizedBox.shrink();
   }
 
 

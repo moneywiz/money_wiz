@@ -30,7 +30,10 @@ class Day {
     _negative += t.value < 0 ? t.value : 0;
   }
 
-  removeTransaction(Transaction t) {
+  removeTransaction(Transaction t, {bool force=false}) {
+    if(!force && Data.account == Data.allAccounts){
+      t.account.months[month.month - 1].days[day - 1].removeTransaction(t, force: true);
+    }
     transactions.remove(t);
     _positive -= t.value > 0 ? t.value : 0;
     _negative -= t.value < 0 ? t.value : 0;

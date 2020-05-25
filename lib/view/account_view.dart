@@ -48,13 +48,13 @@ class AccountViewState extends State<StatefulWidget> {
                 color: Colors.blue,
               ),
               onChanged: (Account newValue) {
-                if (newValue != _add) {
+                if(newValue == _add) {
+                  // TODO - Add Account Form
+                }
+                else {
                   setState(() {
                     Data.account = newValue;
                   });
-                }
-                else {
-                  // TODO - Add Account Form
                 }
               },
               items: getAccounts(),
@@ -135,9 +135,10 @@ class AccountViewState extends State<StatefulWidget> {
                     endIndent: 10,
                   ),
                   ListTile(
+                    enabled: Data.account != Data.allAccounts,
                     title: Text("Budget Goals"),
                     subtitle: Text("Set monthly limits for each category"),
-                    leading: Icon(Icons.flag, color: Colors.blue),
+                    leading: Icon(Icons.flag, color: Data.account != Data.allAccounts ? Colors.blue : Colors.grey),
                     onTap: (){
                       Navigator.of(context).push( MaterialPageRoute(builder: (context) => Limit(4)));
                     },
@@ -174,17 +175,28 @@ class AccountViewState extends State<StatefulWidget> {
           style: TextStyle(inherit: false, fontSize: 17, color: Colors.black),),
       );
     }).toList();
-    res.add(
+    res.addAll(<DropdownMenuItem<Account>>[
       DropdownMenuItem<Account>(
-        value: _add,
-        child: Row (
-          children: <Widget>[
-            Icon(Icons.add),
-            Text("  Create New Account",
-              style: TextStyle(inherit: false, fontSize: 17, color: Colors.black),),
-          ],
-        )
+          value: Data.allAccounts,
+          child: Row (
+              children: <Widget>[
+                Icon(Icons.pie_chart),
+                Text("  All Accounts",
+                  style: TextStyle(inherit: false, fontSize: 17, color: Colors.black),),
+              ],
+            )
+      ),
+      DropdownMenuItem<Account>(
+          value: _add,
+          child: Row (
+            children: <Widget>[
+              Icon(Icons.add),
+              Text("  Create New Account",
+                style: TextStyle(inherit: false, fontSize: 17, color: Colors.black),),
+            ],
+          )
       )
+      ]
     );
     return res;
   }

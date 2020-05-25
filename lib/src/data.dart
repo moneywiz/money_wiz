@@ -23,6 +23,8 @@ class Data {
     Account("Cartão UA", "Cartão de Estudante - Refeições SASUA", 15.0),
   ];
 
+  static final Account allAccounts = Account("All accounts", "All accounts", accounts.fold(0, (double res, Account b) => res + b.startingBalance));
+
   static List<Category> incomeCategories = [
     Category("Salary", Color(random.nextInt(0xffffffff)), Icons.monetization_on),
     Category("Refund", Color(random.nextInt(0xffffffff)), Icons.money_off),
@@ -49,6 +51,14 @@ class Data {
   ];
 
   Data(){
+    for (var i in Iterable<int>.generate(6).toList()) {
+      Month month = Month(2020, i + 1);
+      for (var j in Iterable<int>.generate(Month.nDays(i + 1, 2020)).toList()) {
+        Day d = Day(month, j + 1);
+      }
+      allAccounts.months.add(month);
+    }
+
     for(Account a in accounts) {
       for (Category c in expenseCategories) {
         if(random.nextInt(100) < 70) a.budgets[c] = random.nextInt(400) + 601.0;
@@ -68,11 +78,14 @@ class Data {
                 double.parse(random.nextDouble().toStringAsFixed(2)));
             t.cause = "Placeholder lorem ipsum";
             t.time = TimeOfDay(hour: 14 + k, minute: random.nextInt(60));
+            t.account = a;
 
             List<Category> categories = expense
                 ? expenseCategories
                 : incomeCategories;
             t.category=categories[random.nextInt(categories.length)];
+
+            allAccounts.months[i].days[j].addTransaction(t);
           }
         }
         a.months.add(month);
