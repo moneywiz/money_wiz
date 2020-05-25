@@ -5,6 +5,7 @@ import 'package:moneywiz/src/week.dart';
 import 'package:intl/intl.dart';
 import 'package:moneywiz/view/day_view.dart';
 import 'package:flutter_calendar_carousel/src/calendar_header.dart';
+import 'package:moneywiz/view/month_view.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class WeekView extends StatefulWidget {
@@ -28,12 +29,14 @@ class _WeekViewState extends State<WeekView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(icon: Icon(Icons.home), onPressed: () => Navigator.of(context).pop()),
         title: Text(week.weekString),
         centerTitle: true,
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
+          _getViewSelector(),
           _balanceWidget(),
           Expanded(
             child: ListView.builder(
@@ -70,7 +73,7 @@ class _WeekViewState extends State<WeekView> {
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: <Widget>[
-                            Text((week.days[index].balance>=0?"+":"")+"${format.format(week.days[index].balance)}€", style: TextStyle(fontSize: 30, color: (week.days[index].balance>=0?Colors.green:Colors.red))),
+                            Text((week.days[index].balance>=0?"+":"")+"${format.format(week.days[index].balance)}€", style: TextStyle(fontSize: 20, color: (week.days[index].balance>=0?Colors.green:Colors.red))),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: <Widget>[
@@ -78,14 +81,14 @@ class _WeekViewState extends State<WeekView> {
                                   "+${format.format(week.days[index].positive)}€",
                                   style: TextStyle(
                                     color: Colors.green,
-                                    fontSize: 15,
+                                    fontSize: 10,
                                   )
                                 ),
                                 Text(
                                   "-${format.format(week.days[index].negative.abs())}€",
                                   style: TextStyle(
                                     color: Colors.red,
-                                    fontSize: 15,
+                                    fontSize: 10,
                                   )
                                 ),
                               ],
@@ -101,6 +104,49 @@ class _WeekViewState extends State<WeekView> {
           )
         ]
       )
+    );
+  }
+
+  Widget _getViewSelector() {
+    return Row(
+      children: <Widget>[
+        Expanded(child: Container(child: GestureDetector(
+          child: Container(
+            child: Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                  color: Colors.grey,
+                  border: Border(
+                    right: week.twoMonths?BorderSide(color: Colors.white, width: 2):BorderSide(),
+                    bottom: BorderSide(color: Colors.white70, width: 6),
+                  )
+              ),
+              child: Text(week.twoMonths?"View ${week.days[0].month.monthString}":"View Month", style: TextStyle(fontSize: 20, color: Colors.white), textAlign: TextAlign.center,),
+            )
+          ),
+          onTap: () {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MonthView(week.days[0].month)));
+          },
+        ))),
+        week.twoMonths?Expanded(child: Container(child: GestureDetector(
+          child: Container(
+            child: Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                  color: Colors.grey,
+                  border: Border(
+                    left: BorderSide(color: Colors.white, width: 2),
+                    bottom: BorderSide(color: Colors.white70, width: 6),
+                  )
+              ),
+              child: Text("View ${week.days[week.days.length-1].month.monthString}", style: TextStyle(fontSize: 20, color: Colors.white), textAlign: TextAlign.center,),
+            )
+          ),
+          onTap: () {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MonthView(week.days[week.days.length-1].month)));
+          },
+        ))):null,
+      ].where((element) => element!=null).toList(),
     );
   }
 

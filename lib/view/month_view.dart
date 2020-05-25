@@ -33,6 +33,7 @@ class _MonthViewState extends State<MonthView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(icon: Icon(Icons.home), onPressed: () => Navigator.of(context).pop()),
         title: Text(month!=null?"${month.year} ${month.monthString}":"Unavailable Month"),
         centerTitle: true,
       ),
@@ -52,6 +53,7 @@ class _MonthViewState extends State<MonthView> {
                 )):null,
                 Expanded(
                   child: CalendarCarousel(
+                    todayButtonColor: Colors.transparent,
                     firstDayOfWeek: 1,
                     weekendTextStyle: TextStyle(color: Colors.red),
                     thisMonthDayBorderColor: Colors.grey,
@@ -87,7 +89,7 @@ class _MonthViewState extends State<MonthView> {
                         return Container(
                           width: double.infinity,
                           height: double.infinity,
-                          decoration: BoxDecoration(border: Border.all(color: border, width: 2)),
+                          decoration: BoxDecoration(border: Border.all(color: border, width: 3), color: (day.weekday>=6)?Colors.white30:isToday?Colors.lightBlueAccent:Colors.white),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -162,7 +164,7 @@ class _MonthViewState extends State<MonthView> {
     for (var i=0;i<Month.nWeeks(month.month, month.year);i++) {
       lst.add(
         IconButton(
-          icon: Icon(Icons.arrow_right),
+          icon: Icon(Icons.arrow_forward_ios),
           onPressed: () {_goToWeek(i);},
         )
       );

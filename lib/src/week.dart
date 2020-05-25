@@ -7,7 +7,7 @@ class Week {
   bool twoMonths;
 
   Week(this.days){
-    twoMonths=days[0].month.month==days[days.length-1].month.month;
+    twoMonths=days[0].month.month!=days[days.length-1].month.month;
   }
 
   get positive {

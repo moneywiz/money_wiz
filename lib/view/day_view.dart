@@ -31,6 +31,7 @@ class _DayViewState extends State<DayView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(icon: Icon(Icons.home), onPressed: () => Navigator.of(context).pop()),
         title: Text("${day.month.year} ${day.month.monthString} ${day.day}, ${day.weekDayString}"),
         centerTitle: true,
       ),
@@ -61,18 +62,42 @@ class _DayViewState extends State<DayView> {
   Widget _getViewSelector() {
     return Row(
       children: <Widget>[
-        RaisedButton(
-          child: Text("Month"),
-          onPressed: () {
+        Expanded(child: Container(child: GestureDetector(
+          child: Container(
+            child: Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.grey,
+                border: Border(
+                  right: BorderSide(color: Colors.white, width: 2),
+                  bottom: BorderSide(color: Colors.white70, width: 6),
+                )
+              ),
+              child: Text("View Month", style: TextStyle(fontSize: 20, color: Colors.white), textAlign: TextAlign.center,),
+            )
+          ),
+          onTap: () {
             Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MonthView(day.month)));
           },
-        ),
-        RaisedButton(
-          child: Text("Week"),
-          onPressed: () {
+        ))),
+        Expanded(child: Container(child: GestureDetector(
+          child: Container(
+            child: Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.grey,
+                border: Border(
+                  left: BorderSide(color: Colors.white, width: 2),
+                  bottom: BorderSide(color: Colors.white70, width: 6),
+                )
+              ),
+              child: Text("View Week", style: TextStyle(fontSize: 20, color: Colors.white), textAlign: TextAlign.center,),
+            )
+          ),
+          onTap: () {
             Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => WeekView(day.getWeek())));
           },
-        ),
+        ))),
       ],
     );
   }
@@ -133,7 +158,7 @@ class _DayViewState extends State<DayView> {
     )
     :Padding(padding: EdgeInsets.symmetric(horizontal: 32), child: Text(
       "Add a new transaction and it will be displayed here!",
-      style: TextStyle(color: Colors.black26, fontSize: 40),
+      style: TextStyle(color: Colors.black26, fontSize: 35),
       textAlign: TextAlign.center,
     ));
   }
