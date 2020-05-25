@@ -32,24 +32,11 @@ class _DayViewState extends State<DayView> {
         title: Text("${day.month.year} ${day.month.monthString} ${day.day}, ${day.weekDayString}"),
         centerTitle: true,
       ),
-      body: DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          appBar: TabBar(
-            labelColor: Color(0xFF000000),
-            unselectedLabelColor: Color(0xFF000000),
-            tabs: <Widget>[
-              Tab(child: Text("Balance"),),
-              Tab(text: "Transactions"),
-            ],
-          ),
-          body: TabBarView(
-            children: <Widget>[
-              _balanceWidget(),
-              _transactionsWidget(),
-            ],
-          )
-        ),
+      body: Container(
+          child:
+            _balanceWidget(),
+            //_transactionsWidget(),
+          //],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -65,11 +52,11 @@ class _DayViewState extends State<DayView> {
 
   Widget _balanceWidget() {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         _getPosNegStats(),
-        Text("Total Balance", style: TextStyle(fontSize: 32)),
-        Text((day.balance>=0?"+":"")+"${format.format(day.balance)}€", style: TextStyle(fontSize: 80, color: (day.balance>=0?Colors.green:Colors.red))),
+        Text("Total Balance", style: TextStyle(fontSize: 26)),
+        Text((day.balance>=0?"+":"")+"${format.format(day.balance)}€", style: TextStyle(fontSize: 50, color: (day.balance>=0?Colors.green:Colors.red))),
         Padding(
             padding: EdgeInsets.fromLTRB(100, 0, 100, 0),
             child: CalendarHeader(
@@ -89,6 +76,16 @@ class _DayViewState extends State<DayView> {
                 isTitleTouchable: false,
                 onHeaderTitlePressed: null
             )
+        ),
+        const Divider(
+          color: Colors.black12,
+          height: 20,
+          thickness: 1,
+          indent: 40,
+          endIndent: 40,
+        ),
+        Expanded(
+          child: _transactionsWidget()
         )
       ],
     );
@@ -99,7 +96,7 @@ class _DayViewState extends State<DayView> {
       children: <Widget>[
         Expanded(
           child: Padding(
-            padding: EdgeInsets.all(16),
+            padding: EdgeInsets.fromLTRB(16, 5, 16, 16),
             child: SingleChildScrollView(
               child: Column(children: _getTransactions())
             )
