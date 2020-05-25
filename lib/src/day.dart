@@ -37,9 +37,6 @@ class Day {
     if(!force && Data.account == Data.allAccounts){
       t.account.months[month.month - 1].days[day - 1].removeTransaction(t, force: true);
     }
-    if(!force && Data.account != Data.allAccounts){
-      Data.allAccounts.months[month.month - 1].days[day - 1].removeTransaction(t, force: true);
-    }
     transactions.remove(t);
     _positive -= t.value > 0 ? t.value : 0;
     _negative -= t.value < 0 ? t.value : 0;
