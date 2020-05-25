@@ -106,6 +106,7 @@ class _NewTransactionState extends State<NewTransaction> {
                   onPressed: () {
                     setState(() {
                       gain = ! gain;
+                      dropdownValue="";
                     });
                   },
                   color: Colors.white,
@@ -145,7 +146,6 @@ class _NewTransactionState extends State<NewTransaction> {
           ),
 
           DropdownButton<String>(
-            value: dropdownValue,
             icon: Icon(Icons.arrow_downward),
             iconSize: 24,
             elevation: 16,
@@ -161,14 +161,7 @@ class _NewTransactionState extends State<NewTransaction> {
                 dropdownValue = newValue;
               });
             },
-            items: (gain?Data.incomeCategories.map((elem)=>elem.name):Data.expenseCategories.map((elem)=>elem.name))
-                .map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            })
-                .toList(),
+            items: _getDropdown(),
           ),
 
           RaisedButton(
@@ -190,6 +183,16 @@ class _NewTransactionState extends State<NewTransaction> {
         ],
       ),
     );
+  }
+
+  List<DropdownMenuItem<String>> _getDropdown() {
+    var lst=(gain?Data.incomeCategories.map((elem)=>elem.name):Data.expenseCategories.map((elem)=>elem.name));
+    return lst.map<DropdownMenuItem<String>>((String value) {
+      return DropdownMenuItem<String>(
+        value: value,
+        child: Text(value),
+      );
+    }).toList();
   }
 
 }
