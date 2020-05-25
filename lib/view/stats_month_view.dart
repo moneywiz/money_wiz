@@ -225,10 +225,6 @@ class StateBarChartState extends State<StatsBarChart> with AutomaticKeepAliveCli
                   style: TextStyle(
                       color: Colors.black
                   ),
-                  underline: Container(
-                    height: 2,
-                    color: Colors.blue,
-                  ),
                   onChanged: (Category newValue) {
                     setState(() {
                       dropdownValue = newValue;

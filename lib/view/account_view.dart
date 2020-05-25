@@ -135,8 +135,8 @@ class AccountViewState extends State<StatefulWidget> {
                     endIndent: 10,
                   ),
                   ListTile(
-                    title: Text("Goal Limits"),
-                    subtitle: Text("set monthly limits"),
+                    title: Text("Budget Goals"),
+                    subtitle: Text("Set monthly limits for each category"),
                     leading: Icon(Icons.flag, color: Colors.blue),
                     onTap: (){
                       Navigator.of(context).push( MaterialPageRoute(builder: (context) => Limit(4)));

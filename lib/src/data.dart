@@ -51,7 +51,7 @@ class Data {
   Data(){
     for(Account a in accounts) {
       for (Category c in expenseCategories) {
-        a.budgets[c] = random.nextInt(400) + 601.0;
+        if(random.nextBool()) a.budgets[c] = random.nextInt(400) + 601.0;
       }
 
       a.months = List();
