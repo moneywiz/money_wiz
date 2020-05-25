@@ -64,18 +64,18 @@ class _WeekViewState extends State<WeekView> {
                   subtitle: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text((week.balance>=0?"+":"")+"${format.format(week.balance)}€", style: TextStyle(fontSize: 20, color: (week.balance>=0?Colors.green:Colors.red))),
+                      Text((week.days[index].balance>=0?"+":"")+"${format.format(week.days[index].balance)}€", style: TextStyle(fontSize: 20, color: (week.days[index].balance>=0?Colors.green:Colors.red))),
                       Column(
                         children: <Widget>[
                           Text(
-                              "+${format.format(week.positive)}€",
+                              "+${format.format(week.days[index].positive)}€",
                               style: TextStyle(
                                 color: Colors.green,
                                 fontSize: 10,
                               )
                           ),
                           Text(
-                              "-${format.format(week.negative.abs())}€",
+                              "-${format.format(week.days[index].negative.abs())}€",
                               style: TextStyle(
                                 color: Colors.red,
                                 fontSize: 10,

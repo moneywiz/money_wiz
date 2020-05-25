@@ -65,15 +65,12 @@ class Data {
             int randomNumber = random.nextInt(expense ? 150 : 500) + (expense ? 1 : 51);
             randomNumber *= expense ? -1 : 1;
             Transaction t = Transaction(d, randomNumber +
-                double.parse(random.nextDouble().toStringAsFixed(2)),
-                "Placeholder");
-            int n = expense ? random.nextInt(4) : 1;
+                double.parse(random.nextDouble().toStringAsFixed(2)));
+
             List<Category> categories = expense
                 ? expenseCategories
                 : incomeCategories;
-            for (var m in Iterable<int>.generate(n).toList()) {
-              t.categories.add(categories[random.nextInt(categories.length)]);
-            }
+            t.category=categories[random.nextInt(categories.length)];
           }
         }
         a.months.add(month);

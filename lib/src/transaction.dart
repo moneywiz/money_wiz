@@ -10,11 +10,11 @@ class Transaction {
   double value;
   String description;
   String cause;
-  List<Category> categories;
+  Category category;
 
-  Transaction(this.day, this.value, this.cause, [bool autoAdd=true]) {
+  Transaction(this.day, this.value, [bool autoAdd=true]) {
+    cause="";
     description="";
-    categories=List();
     if (autoAdd) day.addTransaction(this);
     DateTime now=DateTime.now();
     time=TimeOfDay(hour: now.hour, minute: now.minute);

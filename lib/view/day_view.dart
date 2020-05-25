@@ -175,7 +175,12 @@ class _DayViewState extends State<DayView> {
               Text((t.value>=0?"+":"")+"${format.format(t.value)}€", style: TextStyle(color: (t.value>=0?Colors.green:Colors.red)))
             ],
           ),
-        )
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => NewTransaction(day,t))).then((value) {
+              setState(() {});
+            });
+          },
+        ),
       ));
     }
     return lst;

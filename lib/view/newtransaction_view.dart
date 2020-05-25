@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:moneywiz/src/data.dart';
 import 'package:moneywiz/src/day.dart';
 import 'package:moneywiz/src/month.dart';
 import 'package:moneywiz/src/transaction.dart';
@@ -7,17 +9,19 @@ import 'package:flutter/cupertino.dart';
 
 class NewTransaction extends StatefulWidget{
   final Day day;
+  final Transaction tr;
 
-  NewTransaction(this.day);
+  NewTransaction(this.day,[this.tr]);
 
   @override
-  State<StatefulWidget> createState() => _NewTransactionState(day);
+  State<StatefulWidget> createState() => _NewTransactionState(day,tr);
 }
 
 class _NewTransactionState extends State<NewTransaction> {
 
   Day day;
   Transaction tr;
+  bool isNew;
 
   bool gain;
   DateTime formDateTime;
@@ -25,12 +29,28 @@ class _NewTransactionState extends State<NewTransaction> {
 
   TextEditingController _valueController;
   bool _validValue;
+  TextEditingController _causeController;
+  TextEditingController _descrController;
 
-  _NewTransactionState(this.day){
-    this.gain = false;
-    tr=Transaction(day,0,"Test",false);
+  _NewTransactionState(this.day,this.tr){
     _valueController=TextEditingController();
     _validValue=true;
+    _causeController=TextEditingController();
+    _descrController=TextEditingController();
+
+    if (tr==null) {
+      isNew=true;
+      gain = false;
+      tr=Transaction(day,0,false);
+    }
+    else {
+      isNew=false;
+      gain=tr.value>=0;
+      _valueController.text="${tr.value}";
+      _causeController.text=tr.cause;
+      _descrController.text=tr.description;
+      dropdownValue=tr.category.name;
+    }
   }
 
   @override
@@ -49,6 +69,8 @@ class _NewTransactionState extends State<NewTransaction> {
   @override
   void dispose() {
     _valueController.dispose();
+    _causeController.dispose();
+    _descrController.dispose();
     super.dispose();
   }
 
@@ -63,10 +85,9 @@ class _NewTransactionState extends State<NewTransaction> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          Text("Teste Wednesday 20th May 2020"),
           Text("Transaction's Time"),
           RaisedButton(
-            child: Text("${tr.time.hour}:${tr.time.minute}"),
+            child: Text("${tr.time.hour}:${tr.time.minute}", style: TextStyle(fontSize: 32)),
             onPressed: () async {
               TimeOfDay t=await showTimePicker(context: context, initialTime: TimeOfDay.now());
               setState(() {
@@ -77,31 +98,46 @@ class _NewTransactionState extends State<NewTransaction> {
           Text("Value"),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              Card(
+                color: gain ? Colors.green : Colors.red,
+                child: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      gain = ! gain;
+                    });
+                  },
+                  color: Colors.white,
+                  icon: Icon(gain ? Icons.add : Icons.remove),
+
+                )
+              ),
               SizedBox(
                 width: 300,
                 child: TextField(
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Value',
-                    errorText: _validValue?"":"Must be a number"
+                    errorText: _validValue?"":"Must be a number",
                   ),
                   controller: _valueController,
                 ),
               ),
-              RaisedButton(
-                onPressed: () {
-                  setState(() {
-                    this.gain = ! this.gain;
-                  });
-                },
-                color: this.gain ? Colors.green : Colors.red,
-                child: Text("€"),
-              ),
             ],
+          ),
+          Text("Cause"),
+          TextField(
+            controller: _causeController,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'Cause',
+            ),
           ),
           Text("Description"),
           TextField(
+            controller: _descrController,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
               labelText: 'Description',
@@ -125,7 +161,7 @@ class _NewTransactionState extends State<NewTransaction> {
                 dropdownValue = newValue;
               });
             },
-            items: <String>['Restauração', 'Transportes', 'Saude', 'Educação']
+            items: (gain?Data.incomeCategories.map((elem)=>elem.name):Data.expenseCategories.map((elem)=>elem.name))
                 .map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(
                 value: value,
@@ -140,7 +176,12 @@ class _NewTransactionState extends State<NewTransaction> {
             onPressed: () {
               if (_validValue && _valueController.text!="") {
                 tr.value = double.tryParse(_valueController.text);
-                day.addTransaction(tr);
+                if (!gain) tr.value*=-1;
+
+                tr.description=_descrController.text;
+                tr.cause=_causeController.text;
+
+                if (isNew) day.addTransaction(tr);
                 Navigator.of(context).pop();
               }
             },

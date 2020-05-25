@@ -25,17 +25,17 @@ class Month {
   double spentOnCategory(Category c){
     double res = 0;
     for (var d in days) {
-      Map<Category, double> dayMap = d.ExpenseCategoryBalance;
+      Map<Category, double> dayMap = d.expenseCategoryBalance;
       res += dayMap.containsKey(c) ? dayMap[c] : 0;
     }
     return res;
   }
 
-  get ExpenseCategoryBalance {
+  get expenseCategoryBalance {
     Map<Category, double> map = Map();
     map.entries.toList();
     for (var d in days) {
-      Map<Category, double> dayMap = d.ExpenseCategoryBalance;
+      Map<Category, double> dayMap = d.expenseCategoryBalance;
       for (var c in dayMap.keys) {
         map[c] = map.containsKey(c) ? map[c] + dayMap[c]: dayMap[c];
       }
@@ -48,11 +48,11 @@ class Month {
     return lst.sublist(0, 9);
   }
 
-  get IncomeCategoryBalance {
+  get incomeCategoryBalance {
     Map<Category, double> map = Map();
 
     for (var d in days) {
-      Map<Category, double> dayMap = d.IncomeCategoryBalance;
+      Map<Category, double> dayMap = d.incomeCategoryBalance;
       for (var c in dayMap.keys) {
         map[c] = map.containsKey(c) ? map[c] + dayMap[c]: dayMap[c];
       }
