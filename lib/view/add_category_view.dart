@@ -13,22 +13,24 @@ import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 class AddCategoryView extends StatefulWidget{
 
   bool isAddView;
+  List<Category> categories;
 
   int id;
 
-  AddCategoryView(bool isAddView, int id){
+  AddCategoryView(bool isAddView, int id, this.categories){
     this.isAddView = isAddView;
     this.id = id;
   }
 
   @override
-  State<StatefulWidget> createState() => _AddCategoryView(isAddView, id);
+  State<StatefulWidget> createState() => _AddCategoryView(isAddView, id, categories);
 }
 
 
 class _AddCategoryView extends State<StatefulWidget> {
 
   bool isAddView;
+  List<Category> categories;
 
   Color pickerColor ;
   Color currentColor = Color(0xff443a48);
@@ -39,11 +41,11 @@ class _AddCategoryView extends State<StatefulWidget> {
   IconData _icon ;
 
 
-  _AddCategoryView(bool isAddView, int id){
+  _AddCategoryView(bool isAddView, int id, this.categories){
     this.id = id;
     this.isAddView = isAddView;
     if (!isAddView){
-      Category c = Data.expenseCategories[id];
+      Category c = categories[id];
       name = c.name;
       pickerColor = c.color;
       _icon = c.icon;
@@ -88,6 +90,9 @@ class _AddCategoryView extends State<StatefulWidget> {
                   indent: 1,
                   endIndent: 10,
                 ),
+
+
+                categories == Data.expenseCategories ?
                 ListTile(
                   title: Text("Max Monthly Limit"),
                   subtitle: limit == "null" ? Text("Non-Limit") : Text("$limit €", style: TextStyle(color: Colors.blue),),
@@ -101,7 +106,17 @@ class _AddCategoryView extends State<StatefulWidget> {
                     });
 
                   },
-                ),
+                )
+                :
+                Container(
+                  child:
+                  ListTile(
+                    title: Text("Max Monthly Limit", style: TextStyle(color: Colors.black26),),
+                    subtitle: limit == "null" ? Text("Non-Limit") : Text("$limit €", style: TextStyle(color: Colors.blue),),
+                    ),
+                  ),
+
+
                 const Divider(
                   color: Colors.black12,
                   height: 20,
@@ -181,15 +196,19 @@ class _AddCategoryView extends State<StatefulWidget> {
         onPressed: (){
           if(isAddView){
             Category c = new Category(name, pickerColor, _icon);
-            Data.expenseCategories.add(c);
-            Data.account.budgets[c] = double.parse(limit);
+            categories.add(c);
+            if (categories == Data.expenseCategories){
+              Data.account.budgets[c] = double.parse(limit);
+            }
           }
           else{
-            Category c = Data.expenseCategories[id];
+            Category c = categories[id];
             c.name = name;
             c.color = pickerColor;
             c.icon = _icon;
-            Data.account.budgets[c] = double.parse(limit);
+            if (categories == Data.expenseCategories){
+              Data.account.budgets[c] = double.parse(limit);
+            }
           }
           Navigator.of(context).pop();
         },

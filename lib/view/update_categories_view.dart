@@ -52,7 +52,7 @@ class _MainCategories extends State<StatefulWidget> {
                         shrinkWrap: true,
                         children: <Widget>[
                           for (int i = 0; i<Data.expenseCategories.length; i++)
-                            MyTile(i, Data.expenseCategories, changeName, removeName),
+                            MyTile(i, Data.expenseCategories, updateWidget),
 
                         ],
                       ),
@@ -61,7 +61,7 @@ class _MainCategories extends State<StatefulWidget> {
                         shrinkWrap: true,
                         children: <Widget>[
                           for (int i = 0; i<Data.incomeCategories.length; i++)
-                            MyTile(i, Data.incomeCategories, changeName, removeName),
+                            MyTile(i, Data.incomeCategories, updateWidget),
 
                         ],
                       ),
@@ -81,50 +81,9 @@ class _MainCategories extends State<StatefulWidget> {
     );
   }
 
-  /*List<Category> deepCopyListCategories(){
-    List<Category> new_list = new List<Category>();
-    for(int i = 0; i<Data.expenseCategories.length; i++){
-      new_list.add(new Category(Data.expenseCategories[i].name));
-    }
-    return new_list;
-  }*/
 
-  changeName(String name, int id, List<Category> categories){
-    setState(() {
-      categories[id].name = name;
-    });
-  }
-
-  removeName(int id, List<Category> categories){
-    setState(() {
-      for(int i = 0; i<Data.accounts.length; i++){
-        Data.accounts[i].budgets.remove(categories[id]);
-      }
-      categories.removeAt(id);
-    });
-  }
-
-  Future<String> createCategoriesNewPopUp(BuildContext context){
-
-    TextEditingController customController = TextEditingController();
-
-    return showDialog(context: context, builder: (context){
-      return AlertDialog(
-          title: Text("New Category name :"),
-          content: TextField(
-            controller: customController,
-          ),
-          actions: <Widget>[
-            MaterialButton(
-              elevation: 5.0,
-              child: Text("Create"),
-              onPressed: () {
-                Navigator.of(context).pop(customController.text.toString());
-              },
-            ),
-          ]
-      );
-    });
+  updateWidget(){
+    setState((){});
   }
 
 
@@ -137,17 +96,10 @@ class MyTile extends StatelessWidget{
   int id;
   List<Category> categories;
 
-  Category category;
-  String name;
-
-  Function(String new_name, int id, List<Category> categories) changeName;
-  Function(int id, List<Category> categories) removeName;
+  Function() updateWidget;
 
   @override
-  MyTile(this.id, this.categories, this.changeName, this.removeName){
-    category = categories[id];
-    name = category.name;
-  }
+  MyTile(this.id, this.categories, this.updateWidget);
 
 
   @override
@@ -173,9 +125,14 @@ class MyTile extends StatelessWidget{
         ),
       ),
       confirmDismiss: (direction) async {
-        return await createCategoriesRemovePopUp(context, name).then((onValue){
+        return await createCategoriesRemovePopUp(context, categories[id].name).then((onValue){
           if(onValue == true){
-            removeName(id, categories);
+            for(int i = 0; i<Data.accounts.length; i++){
+              Data.accounts[i].budgets.remove(categories[id]);
+            }
+            categories.removeAt(id);
+            updateWidget();
+
             return true;
           }
           return false;
@@ -183,12 +140,12 @@ class MyTile extends StatelessWidget{
       },
       child: ListTile(
         onTap: (){
-          Navigator.of(context).push( MaterialPageRoute(builder: (context) => (AddCategoryView(false, id)))).then((onValue){
-            changeName(categories[0].name, 0, categories);
+          Navigator.of(context).push( MaterialPageRoute(builder: (context) => (AddCategoryView(false, id, categories)))).then((onValue){
+            updateWidget();
           });
         },
-        leading: Icon(category.icon, color: Colors.black,),
-        title: Text(name),
+        leading: Icon(categories[id].icon, color: Colors.black,),
+        title: Text(categories[id].name),
       ),
     );
   }
