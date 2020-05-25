@@ -90,7 +90,7 @@ class _NewTransactionState extends State<NewTransaction> {
         children: <Widget>[
           Text("Transaction's Time"),
           RaisedButton(
-            child: Text("${tr.time.hour}:${tr.time.minute}", style: TextStyle(fontSize: 32)),
+            child: Text("${tr.time.hour.toString().padLeft(2, '0')}:${tr.time.minute.toString().padLeft(2, '0')}", style: TextStyle(fontSize: 32)),
             onPressed: () async {
               TimeOfDay t=await showTimePicker(context: context, initialTime: TimeOfDay.now());
               setState(() {

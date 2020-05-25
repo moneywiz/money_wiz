@@ -175,36 +175,26 @@ class _AddCategoryView extends State<StatefulWidget> {
               ],
             ),
           ),
-          Expanded(
-            child: Align(
-              alignment: FractionalOffset.bottomRight,
-              child: Padding(
-                padding: EdgeInsets.only(right: 20.0),
-                child: RaisedButton(
-                  child:  isAddView ? Text("Create", style: TextStyle(fontSize: 14, color: Colors.white),) : Text("Submit", style: TextStyle(fontSize: 14, color: Colors.white),),
-                  color: Colors.blue,
-                  onPressed: (){
-                    if(isAddView){
-                      Category c = new Category(name, pickerColor, _icon);
-                      Data.expenseCategories.add(c);
-                      Data.account.budgets[c] = double.parse(limit);
-                    }
-                    else{
-                      Category c = Data.expenseCategories[id];
-                      c.name = name;
-                      c.color = pickerColor;
-                      c.icon = _icon;
-                      Data.account.budgets[c] = double.parse(limit);
-                    }
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ),
-            ),
-          ),
-
-
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          if(isAddView){
+            Category c = new Category(name, pickerColor, _icon);
+            Data.expenseCategories.add(c);
+            Data.account.budgets[c] = double.parse(limit);
+          }
+          else{
+            Category c = Data.expenseCategories[id];
+            c.name = name;
+            c.color = pickerColor;
+            c.icon = _icon;
+            Data.account.budgets[c] = double.parse(limit);
+          }
+          Navigator.of(context).pop();
+        },
+        child: Icon(Icons.check),
+        backgroundColor: Colors.green,
       ),
     );
   }
@@ -219,18 +209,21 @@ class _AddCategoryView extends State<StatefulWidget> {
 
     return showDialog(context: context, builder: (context){
       return AlertDialog(
-        title: Text("Pick one Color :"),
-        //content: TextField(
-        //),
+        title: Text("Pick One Color :"),
         actions: <Widget>[
-          BlockPicker(
-              pickerColor: currentColor,
-              onColorChanged:  (Color color){
-                setState((){
-                  pickerColor = color;
-                });
-                Navigator.of(context).pop();
-              }),
+          SizedBox(
+            height: 380,
+            child:
+              BlockPicker(
+                  pickerColor: currentColor,
+                  onColorChanged:  (Color color){
+                    setState((){
+                      pickerColor = color;
+                    });
+                    Navigator.of(context).pop();
+                  }
+              ),
+          )
         ],
       );
     });

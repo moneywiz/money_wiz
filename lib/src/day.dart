@@ -29,6 +29,12 @@ class Day {
     _negative += t.value < 0 ? t.value : 0;
   }
 
+  removeTransaction(Transaction t) {
+    transactions.remove(t);
+    _positive -= t.value > 0 ? t.value : 0;
+    _negative -= t.value < 0 ? t.value : 0;
+  }
+
   get expenseCategoryBalance {
     Map<Category, double> map = Map();
     for (var t in transactions) {
