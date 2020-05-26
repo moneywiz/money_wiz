@@ -319,7 +319,9 @@ class _NewTransactionState extends State<NewTransaction> {
   }
 
   List<DropdownMenuItem<String>> _getDropdown() {
-    var lst=(gain?Data.incomeCategories.map((elem)=>elem.name):Data.expenseCategories.map((elem)=>elem.name));
+    var iter=(gain?Data.incomeCategories.map((elem)=>elem.name):Data.expenseCategories.map((elem)=>elem.name));
+    var lst=iter.toList();
+    lst.sort((e1,e2)=>e1.compareTo(e2));
     return lst.map<DropdownMenuItem<String>>((String value) {
       return DropdownMenuItem<String>(
         value: value,

@@ -172,7 +172,7 @@ class AccountViewState extends State<StatefulWidget> {
                     subtitle: Text("Edit or delete the current account"),
                     leading: Icon(Icons.account_balance_wallet, color: Data.account != Data.allAccounts ? Colors.blue : Colors.grey),
                     onTap: (){
-                      Navigator.of(context).push( MaterialPageRoute(builder: (context) => (AccountFormView(Data.account))));
+                      Navigator.of(context).push( MaterialPageRoute(builder: (context) => (AccountFormView(Data.account)))).then((value) {setState(() {});});
                     },
                   ),
                 ],

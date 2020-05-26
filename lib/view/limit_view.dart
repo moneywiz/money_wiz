@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/services.dart';
 import 'package:moneywiz/src/category.dart';
 import 'package:flutter/material.dart';
@@ -85,7 +87,8 @@ class _Limit extends State<Limit> {
         padding: EdgeInsets.only(top: 15),
       )
     ];
-    Data.account.budgets.entries.forEach((MapEntry<Category, double> e) {
+    SplayTreeMap<Category,double> map=SplayTreeMap.from(Data.account.budgets, (c1,c2)=>c1.name.compareTo(c2.name));
+    map.entries.forEach((MapEntry<Category, double> e) {
       double budget = e.value;
       double spent = (Data.months[widget.month] as Month).spentOnCategory(e.key);
       double available = budget - spent;
@@ -234,15 +237,17 @@ class _Limit extends State<Limit> {
                               category = newValue;
                             });
                           },
-                          items: categories
-                              .map<DropdownMenuItem<Category>>((
+                          items: () {
+                            categories.sort((c1,c2)=>c1.name.compareTo(c2.name));
+                            return categories.map<DropdownMenuItem<Category>>((
                               Category category) {
                             return DropdownMenuItem<Category>(
                               value: category,
                               child: Text(category.name),
                             );
                           })
-                              .toList(),
+                              .toList();
+                          }.call(),
                         )
                     )
                   ]
