@@ -54,7 +54,7 @@ class _NewTransactionState extends State<NewTransaction> {
       _valueController.text="${tr.value.abs()}";
       _causeController.text=tr.cause;
       _descrController.text=tr.description;
-      dropdownValue=tr.category?.name??"";
+      dropdownValue=tr.category?.name??null;
     }
 
     Map<String,Category> exp=Map.fromIterable(Data.expenseCategories, key: (elem)=>elem.name.toString(), value: (elem)=>elem);
@@ -94,7 +94,6 @@ class _NewTransactionState extends State<NewTransaction> {
     return Scaffold(
       key: scaffold,
       appBar: appBar,
-      //resizeToAvoidBottomPadding: false,
       body: SingleChildScrollView(child: ConstrainedBox(constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height-appBar.preferredSize.height-MediaQuery.of(context).padding.top), child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -109,21 +108,21 @@ class _NewTransactionState extends State<NewTransaction> {
           ),
           Expanded(
             flex: 1,
-              child:Row(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Padding(
                     padding: EdgeInsets.only(left: 20),
-                    child: Text("Transaction's \nTime", style: TextStyle(fontSize: 17),),
+                    child: Text("Time", style: TextStyle(fontSize: 17),),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(left: 90),
-                    child:
-                    RaisedButton(
+                    padding: EdgeInsets.only(right: 90),
+                    child: RaisedButton(
                       child: Text("${tr.time.hour.toString().padLeft(2, '0')}:${tr.time.minute.toString().padLeft(2, '0')}", style: TextStyle(fontSize: 32)),
                       onPressed: () async {
-                        TimeOfDay t=await showTimePicker(context: context, initialTime: TimeOfDay.now());
+                        TimeOfDay t=await showTimePicker(context: context, initialTime: tr.time==null?TimeOfDay.now():tr.time);
                         setState(() {
-                          tr.time??=t;
+                          if (t!=null) tr.time=t;
                         });
                       },
                     ),
@@ -183,15 +182,6 @@ class _NewTransactionState extends State<NewTransaction> {
               ],
             ),
           ),
-
-          /*Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-
-
-            ],
-          ),*/
           const Divider(
             color: Colors.black12,
             height: 20,
@@ -211,8 +201,7 @@ class _NewTransactionState extends State<NewTransaction> {
                   padding: EdgeInsets.only(left: 90),
                   child:
                       Container(
-                        width: 230,
-                        height: 45,
+                        width: MediaQuery.of(context).size.width*0.55,
                         child:
                         TextField(
                           controller: _causeController,
@@ -246,8 +235,7 @@ class _NewTransactionState extends State<NewTransaction> {
                   padding: EdgeInsets.only(left: 53),
                   child:
                   Container(
-                    width: 230,
-                    height: 245,
+                    width: MediaQuery.of(context).size.width*0.55,
                     child:
                     TextField(
                       controller: _descrController,
@@ -271,13 +259,13 @@ class _NewTransactionState extends State<NewTransaction> {
           ),
           Expanded(
             flex: 2,
-            child: Row(children: <Widget>[
+            child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
               Padding(
                 padding: EdgeInsets.only(left: 20),
                 child: Text("Category", style: TextStyle(fontSize: 17),),
               ),
               Padding(
-                padding: EdgeInsets.only(left: 20),
+                padding: EdgeInsets.only(right: 100),
                 child:
                 DropdownButton<String>(
                   value: dropdownValue,
