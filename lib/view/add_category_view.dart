@@ -3,6 +3,9 @@ import 'package:moneywiz/src/category.dart';
 import 'package:moneywiz/src/data.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
+import 'package:moneywiz/src/day.dart';
+import 'package:moneywiz/src/month.dart';
+import 'package:moneywiz/src/transaction.dart';
 
 
 class AddCategoryView extends StatefulWidget{
@@ -200,6 +203,7 @@ class _AddCategoryView extends State<StatefulWidget> {
                   indent: 1,
                   endIndent: 10,
                 ),
+                getDelete()
               ],
             ),
           ),
@@ -241,6 +245,46 @@ class _AddCategoryView extends State<StatefulWidget> {
         backgroundColor: Colors.green,
       ),
     );
+  }
+
+  Widget getDelete() {
+    if(!isAddView) {
+      return Column(
+        children: <Widget>[
+          ListTile(
+            title: Text("Remove", style: TextStyle(color: Colors.red),),
+            subtitle: Text("Permanently remove this category"),
+            onTap: (){
+              RemovePopUp(context, name).then((onValue){
+                if(onValue == true){
+                  for(int i = 0; i<Data.accounts.length; i++){
+                    Data.accounts[i].budgets.remove(categories[id]);
+                  }
+                  for(Month month in Data.account.months) {
+                    for(Day day in month.days) {
+                      List<Transaction> lst = List.from(day.transactions);
+                      for(Transaction transaction in lst) {
+                        if(transaction.category == categories[id]) day.removeTransaction(transaction);
+                      }
+                    }
+                  }
+                  categories.removeAt(id);
+                  Navigator.of(context).pop();
+                }
+              });
+            },
+          ),
+          const Divider(
+            color: Colors.black12,
+            height: 20,
+            thickness: 1,
+            indent: 1,
+            endIndent: 10,
+          )
+        ],
+      );
+    }
+    else return SizedBox.shrink();
   }
 
   _pickIcon() async {
@@ -316,6 +360,31 @@ class _AddCategoryView extends State<StatefulWidget> {
               onPressed: () {
                 String value = customController.text.toString();
                 Navigator.of(context).pop(value);
+              },
+            ),
+          ]
+      );
+    });
+  }
+
+  Future<bool> RemovePopUp(BuildContext context, String name){
+
+    return showDialog(context: context, builder: (context){
+      return AlertDialog(
+          title: Text("Remove Category ${name}?", style: TextStyle(fontSize: 17),),
+          actions: <Widget>[
+            MaterialButton(
+              elevation: 5.0,
+              child: Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            MaterialButton(
+              elevation: 5.0,
+              child: Text("Remove", style: TextStyle(color: Colors.red),),
+              onPressed: () {
+                Navigator.of(context).pop(true);
               },
             ),
           ]
