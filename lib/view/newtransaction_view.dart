@@ -296,13 +296,14 @@ class _NewTransactionState extends State<NewTransaction> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          if (_validValue && _valueController.text!="") {
+          if (_validValue && _valueController.text!="" && allCats.containsKey(dropdownValue) && _causeController.text!="") {
             tr.value = double.tryParse(_valueController.text);
             if (!gain) tr.value*=-1;
 
             tr.description=_descrController.text;
             tr.cause=_causeController.text;
             tr.category=allCats.containsKey(dropdownValue)?allCats[dropdownValue]:null;
+            tr.account=Data.account;
 
             if (isNew) day.addTransaction(tr);
             Navigator.of(context).pop();

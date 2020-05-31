@@ -310,8 +310,8 @@ class _DayViewState extends State<DayView> {
           child: Row(
             children: <Widget>[
               Icon(Icons.account_balance_wallet, size: 16),
-              Text(" ${t.account.name}", style: TextStyle(fontSize: 13,)),
-            ],
+              t.account!=null?Text(" ${t.account.name}", style: TextStyle(fontSize: 13,)):null,
+            ].where((element) => element!=null).toList(),
           )
       );
     }
