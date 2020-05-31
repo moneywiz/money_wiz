@@ -7,10 +7,14 @@ class Account {
   List<Month> months;
   double startingBalance;
   Map<Category, double> budgets;
+  double maxPos;
+  double maxNeg;
 
   Account(this.name, this.description, this.startingBalance){
     months = List();
     budgets = Map();
+    maxPos = 0;
+    maxNeg = 0;
   }
 
   get balance {

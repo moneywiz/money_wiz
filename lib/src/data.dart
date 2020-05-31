@@ -162,6 +162,14 @@ class Data {
             t.time = TimeOfDay(hour: 14 + k, minute: random.nextInt(60));
             t.account = a;
           }
+          double pos = d.getPositive();
+          a.maxPos = pos > a.maxPos ? pos : a.maxPos;
+          double apos = allAccounts.months[i].days[j].getPositive();
+          allAccounts.maxPos = apos > allAccounts.maxPos ? apos : allAccounts.maxPos;
+          double neg = d.getNegative().abs();
+          a.maxNeg = neg > a.maxNeg ? neg : a.maxNeg;
+          double aneg = allAccounts.months[i].days[j].getNegative().abs();
+          allAccounts.maxNeg = aneg > allAccounts.maxNeg ? aneg : allAccounts.maxNeg;
         }
         a.months.add(month);
       }
